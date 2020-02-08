@@ -1,0 +1,12 @@
+﻿.block-base {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 30px;
+    line-height: 75%;
+    text-align: center;
+    white-space: pre-wrap;
+    color: #000000;
+}
+
+block-snake {
+    color: #8B0000;
+}
