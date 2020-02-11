@@ -14,10 +14,10 @@ export class NavMenu extends Component {
                         <NavbarBrand tag={Link} to="/">Erik Hedaker's Webbsite</NavbarBrand>
                         <ul className="navbar-nav flex-grow">
                             <NavItem>
-                                <NavLink tag={Link} className="text-dark border border-dark" to="/Portfolio">Portfolio</NavLink>
+                                <NavLink tag={Link} className="text-dark border border-dark" to="/CurriculumVitae">CurriculumVitae</NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink tag={Link} className="text-dark border border-dark" to="/Projects">Projects</NavLink>
+                                <NavLink tag={Link} className="text-dark border border-dark" to="/Portfolio">Portfolio</NavLink>
                             </NavItem>
                         </ul>
                     </Container>
