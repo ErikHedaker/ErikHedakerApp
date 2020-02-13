@@ -1,4 +1,5 @@
 ﻿import React, { Component } from 'react';
+import { Button } from 'reactstrap';
 import './Snake.css';
 
 class Vector2i {
@@ -18,6 +19,13 @@ class Vector2i {
         this.y *= value;
         return this;
     }
+
+    Equal(other) {
+        return (
+            this.x === other.x &&
+            this.y === other.y
+        );
+    }
 }
 
 const movement = {
@@ -27,14 +35,16 @@ const movement = {
     ["west"]:  new Vector2i(-1,  0)
 };
 
-function Vector2iToArrayIndex(value, size) {
-    return (value.y * size.x) + value.x;
+const reactStringReplace = require('react-string-replace');
+
+function Vector2iToArrayIndex(position, size) {
+    return (position.y * size.x) + position.x;
 }
 
-function ChangeString(string, char, size, array) {
+function ChangeString(output, insert, size, array) {
     array.forEach(function (position) {
-        string[Vector2iToArrayIndex(position, size)] = char;
-    }, this);
+        output.splice(Vector2iToArrayIndex(position, size), 1, insert);
+    });
 }
 
 function OnBorder(position, size) {
@@ -64,15 +74,16 @@ export class Snake extends Component {
 
     constructor(props) {
         super(props);
-        this.size = new Vector2i(20, 20);
-        this.player = new Player(new Vector2i(2, 2), 10);
+        this.size = new Vector2i(21, 21);
+        this.player = new Player(new Vector2i(1, 10), 5);
         this.obstacles = BorderObstacles(this.size);
         this.direction = "east";
         this.interval = 125;
+        this.intervalID;
     }
 
     componentDidMount() {
-        setInterval(this.Update.bind(this), this.interval);
+        this.Reset();
         document.onkeydown = this.onKeyDown;
     }
 
@@ -99,25 +110,63 @@ export class Snake extends Component {
     }
 
     Update() {
-        this.player.Move(this.direction);
-        this.forceUpdate();
+        if (this.CollisionCheck()) {
+            this.Stop();
+        }
+        else {
+            this.player.Move(this.direction);
+            this.forceUpdate();
+        }
+    }
+
+    Reset() {
+        clearInterval(this.intervalID);
+        this.intervalID = setInterval(this.Update.bind(this), this.interval);
+        this.player = new Player(new Vector2i(1, 10), 5);
+        this.direction = "east";
+    }
+
+    Stop() {
+        clearInterval(this.intervalID);
+    }
+
+    CollisionCheck() {
+        let check = false;
+        if (this.obstacles) {
+            this.obstacles.forEach(position => {
+                //if (this.player.Head().Equal(position)) {
+                //    return true;
+                //}
+                if (this.player.body[0].x === position.x &&
+                    this.player.body[0].y === position.y) {
+                    check = true;
+                }
+            }, this);
+        }
+        return check;
     }
 
     ToString() {
         let output = new Array(this.size.x * this.size.y).fill('-');
-        ChangeString(output, 'O', this.size, this.player.body);
-        ChangeString(output, '=', this.size, this.obstacles);
-        for (let i = this.size.y; i > 0; i--)
-        {
+        this.player.body.forEach(function (position) {
+            output[Vector2iToArrayIndex(position, this.size)] = 'O';
+        }, this);
+        this.obstacles.forEach(function (position) {
+            output[Vector2iToArrayIndex(position, this.size)] = 'X';
+        }, this);
+        for (let i = this.size.y; i > 0; i--) {
             output.splice(this.size.x * i, 0, '\n');
         }
+        output = reactStringReplace(output, /(O)/g, (match, i) => (<span style={{ color: 'blue' }}>{match}</span>));
+        output = reactStringReplace(output, /(X)/g, (match, i) => (<span style={{ color: 'red' }}>{match}</span>));
         return output;
     }
 
     render() {
         return (
-            <div className="block-base">
+            <div className="base">
                 {this.ToString()}
+                <Button onClick={this.Reset.bind(this)}>Reset</Button>
             </div>
         );
     }
@@ -128,10 +177,18 @@ class Player {
         this.body = new Array(length).fill(start);
     }
 
+    Head() {
+        return this.body[0];
+    }
+
+    Grow() {
+        this.body.push(this.body[this.body.length - 1]);
+    }
+
     Move(direction) {
         for (let i = this.body.length - 1; i > 0; i--) {
             this.body[i] = { ...this.body[i - 1] };
         }
-        this.body[0].Add(movement[direction]);
+        this.Head().Add(movement[direction]);
     }
 }
