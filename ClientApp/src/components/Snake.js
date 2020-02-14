@@ -37,14 +37,12 @@ const movement = {
 
 const reactStringReplace = require('react-string-replace');
 
-function Vector2iToArrayIndex(position, size) {
-    return (position.y * size.x) + position.x;
+function RandomNumberGenerator(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function ChangeString(output, insert, size, array) {
-    array.forEach(function (position) {
-        output.splice(Vector2iToArrayIndex(position, size), 1, insert);
-    });
+function Vector2iToArrayIndex(position, size) {
+    return (position.y * size.x) + position.x;
 }
 
 function OnBorder(position, size) {
@@ -69,81 +67,98 @@ function BorderObstacles(size) {
     return obstacles;
 }
 
+function CollisionCheckArrayVector2i(first, second) {
+    let collision = false;
+    if (first) {
+        first.forEach(one => {
+            if (second) {
+                second.forEach(two => {
+                    if (one.Equal(two)) {
+                        collision = true;
+                    }
+                });
+            }
+        });
+    }
+    return collision;
+}
+
 export class Snake extends Component {
     static displayName = Snake.name;
 
     constructor(props) {
         super(props);
-        this.size = new Vector2i(21, 21);
-        this.player = new Player(new Vector2i(1, 10), 5);
-        this.obstacles = BorderObstacles(this.size);
-        this.direction = "east";
-        this.interval = 125;
-        this.intervalID;
-    }
-
-    componentDidMount() {
         this.Reset();
-        document.onkeydown = this.onKeyDown;
+        document.onkeydown = this.KeyPress.bind(this);
     }
 
-    onKeyDown = (e) => {
-        e = e || window.event;
-        switch (e.keyCode) {
+    Reset() {
+        clearInterval(this.intervalID);
+        this.size = new Vector2i(17, 17);
+        this.player = new Player(new Vector2i(1, 8), 5);
+        this.obstacles = BorderObstacles(this.size);
+        this.food = new Food();
+        this.direction = "east";
+        this.directionPrev = "east";
+        this.interval = 100;
+        this.intervalID = setInterval(this.Update.bind(this), this.interval);
+    }
+
+    KeyPress(event) {
+        event = event || window.event;
+        switch (event.keyCode) {
             case 87:
-                if (this.direction !== "south")
+                if (this.directionPrev !== "south")
                     this.direction = "north";
                 break;
             case 68:
-                if (this.direction !== "west")
+                if (this.directionPrev !== "west")
                     this.direction = "east";
                 break;
             case 83:
-                if (this.direction !== "north")
+                if (this.directionPrev !== "north")
                     this.direction = "south";
                 break;
             case 65:
-                if (this.direction !== "east")
+                if (this.directionPrev !== "east")
                     this.direction = "west";
                 break;
         }
     }
 
     Update() {
-        if (this.CollisionCheck()) {
-            this.Stop();
+        if (CollisionCheckArrayVector2i([this.player.Head()], this.obstacles)) {
+            clearInterval(this.intervalID);
         }
         else {
             this.player.Move(this.direction);
+            this.directionPrev = this.direction;
+            for (let i = this.food.Amount() - 1; i >= 0; i--) {
+                if (this.food.positions[i].Equal(this.player.Head())) {
+                    this.food.positions.splice(i, 1);
+                    this.player.Grow();
+                }
+            }
+            while (this.food.Amount() < 2) {
+                this.AddRandomFood();
+            }
             this.forceUpdate();
         }
     }
 
-    Reset() {
-        clearInterval(this.intervalID);
-        this.intervalID = setInterval(this.Update.bind(this), this.interval);
-        this.player = new Player(new Vector2i(1, 10), 5);
-        this.direction = "east";
-    }
-
-    Stop() {
-        clearInterval(this.intervalID);
-    }
-
-    CollisionCheck() {
-        let check = false;
-        if (this.obstacles) {
-            this.obstacles.forEach(position => {
-                //if (this.player.Head().Equal(position)) {
-                //    return true;
-                //}
-                if (this.player.body[0].x === position.x &&
-                    this.player.body[0].y === position.y) {
-                    check = true;
-                }
-            }, this);
+    AddRandomFood() {
+        while (true) {
+            let random = new Vector2i(
+                RandomNumberGenerator(1, this.size.x - 2),
+                RandomNumberGenerator(1, this.size.y - 2)
+            );
+            if (!CollisionCheckArrayVector2i([random], this.obstacles) &&
+                !CollisionCheckArrayVector2i([random], this.player.body) &&
+                !CollisionCheckArrayVector2i([random], this.food.positions)) {
+                this.food.Add(random);
+                return;
+            }
         }
-        return check;
     }
 
     ToString() {
@@ -154,11 +169,17 @@ export class Snake extends Component {
         this.obstacles.forEach(function (position) {
             output[Vector2iToArrayIndex(position, this.size)] = 'X';
         }, this);
+        if (this.food.positions) {
+            this.food.positions.forEach(function (position) {
+                output[Vector2iToArrayIndex(position, this.size)] = 'S';
+            }, this);
+        }
         for (let i = this.size.y; i > 0; i--) {
             output.splice(this.size.x * i, 0, '\n');
         }
-        output = reactStringReplace(output, /(O)/g, (match, i) => (<span style={{ color: 'blue' }}>{match}</span>));
-        output = reactStringReplace(output, /(X)/g, (match, i) => (<span style={{ color: 'red' }}>{match}</span>));
+        output = reactStringReplace(output, /(O)/g, (match) => (<span style={{ color: 'blue'  }}>{match}</span>));
+        output = reactStringReplace(output, /(X)/g, (match) => (<span style={{ color: 'red'   }}>{match}</span>));
+        output = reactStringReplace(output, /(S)/g, (match) => (<span style={{ color: 'green' }}>{match}</span>));
         return output;
     }
 
@@ -190,5 +211,28 @@ class Player {
             this.body[i] = { ...this.body[i - 1] };
         }
         this.Head().Add(movement[direction]);
+    }
+}
+
+class Food {
+    constructor() {
+        this.positions = new Array();
+    }
+
+    Amount() {
+        return this.positions.length;
+    }
+
+    Add(position) {
+        this.positions.push(position);
+    }
+
+    Remove(position) {
+        for (let i = 0; i < this.positions.length; i++) {
+            if (this.positions[i].Equal(position)) {
+                this.positions.splice(i, 1);
+                return;
+            }
+        }
     }
 }
