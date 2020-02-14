@@ -14,12 +14,6 @@ class Vector2i {
         return this;
     }
 
-    Multiply(value) {
-        this.x *= value;
-        this.y *= value;
-        return this;
-    }
-
     Equal(other) {
         return (
             this.x === other.x &&
@@ -69,17 +63,13 @@ function BorderObstacles(size) {
 
 function CollisionCheckArrayVector2i(first, second) {
     let collision = false;
-    if (first) {
-        first.forEach(one => {
-            if (second) {
-                second.forEach(two => {
-                    if (one.Equal(two)) {
-                        collision = true;
-                    }
-                });
+    first.forEach(one => {
+        second.forEach(two => {
+            if (one.Equal(two)) {
+                collision = true;
             }
         });
-    }
+    });
     return collision;
 }
 
@@ -97,7 +87,7 @@ export class Snake extends Component {
         this.size = new Vector2i(17, 17);
         this.player = new Player(new Vector2i(1, 8), 5);
         this.obstacles = BorderObstacles(this.size);
-        this.food = new Food();
+        this.food = [];
         this.direction = "east";
         this.directionPrev = "east";
         this.interval = 100;
@@ -127,22 +117,22 @@ export class Snake extends Component {
     }
 
     Update() {
-        if (CollisionCheckArrayVector2i([this.player.Head()], this.obstacles)) {
-            clearInterval(this.intervalID);
+        this.player.Move(this.direction);
+        this.directionPrev = this.direction;
+        for (let i = this.food.length - 1; i >= 0; i--) {
+            if (this.food[i].Equal(this.player.Head())) {
+                this.food.splice(i, 1);
+                this.player.Grow();
+            }
         }
-        else {
-            this.player.Move(this.direction);
-            this.directionPrev = this.direction;
-            for (let i = this.food.Amount() - 1; i >= 0; i--) {
-                if (this.food.positions[i].Equal(this.player.Head())) {
-                    this.food.positions.splice(i, 1);
-                    this.player.Grow();
-                }
-            }
-            while (this.food.Amount() < 2) {
-                this.AddRandomFood();
-            }
-            this.forceUpdate();
+        while (this.food.length < 2) {
+            this.AddRandomFood();
+        }
+        this.forceUpdate();
+        if (CollisionCheckArrayVector2i([this.player.Head()], this.obstacles) ||
+            CollisionCheckArrayVector2i([this.player.Head()], this.player.body.slice(1))) {
+            clearInterval(this.intervalID);
+            return;
         }
     }
 
@@ -154,40 +144,54 @@ export class Snake extends Component {
             );
             if (!CollisionCheckArrayVector2i([random], this.obstacles) &&
                 !CollisionCheckArrayVector2i([random], this.player.body) &&
-                !CollisionCheckArrayVector2i([random], this.food.positions)) {
-                this.food.Add(random);
+                !CollisionCheckArrayVector2i([random], this.food)) {
+                this.food.push(random);
                 return;
             }
         }
     }
 
     ToString() {
-        let output = new Array(this.size.x * this.size.y).fill('-');
-        this.player.body.forEach(function (position) {
-            output[Vector2iToArrayIndex(position, this.size)] = 'O';
+        const icon = {
+            empty: '-',
+            obstacle: 'H',
+            food: 'X',
+            snake: 'O',
+            snakeHead: 'P'
+        };
+        let output = new Array(this.size.x * this.size.y).fill(icon.empty);
+        this.obstacles.forEach(position => {
+            output[Vector2iToArrayIndex(position, this.size)] = icon.obstacle;
         }, this);
-        this.obstacles.forEach(function (position) {
-            output[Vector2iToArrayIndex(position, this.size)] = 'X';
+        this.food.forEach(position =>  {
+            output[Vector2iToArrayIndex(position, this.size)] = icon.food;
         }, this);
-        if (this.food.positions) {
-            this.food.positions.forEach(function (position) {
-                output[Vector2iToArrayIndex(position, this.size)] = 'S';
-            }, this);
-        }
+        this.player.body.forEach(position =>  {
+            output[Vector2iToArrayIndex(position, this.size)] = icon.snake;
+        }, this);
+        output[Vector2iToArrayIndex(this.player.Head(), this.size)] = icon.snakeHead;
         for (let i = this.size.y; i > 0; i--) {
             output.splice(this.size.x * i, 0, '\n');
         }
-        output = reactStringReplace(output, /(O)/g, (match) => (<span style={{ color: 'blue'  }}>{match}</span>));
-        output = reactStringReplace(output, /(X)/g, (match) => (<span style={{ color: 'red'   }}>{match}</span>));
-        output = reactStringReplace(output, /(S)/g, (match) => (<span style={{ color: 'green' }}>{match}</span>));
+        output = reactStringReplace(output, new RegExp("(" + icon.obstacle + ")", "g"), () => <span style={{ color: 'red' }}>{icon.obstacle}</span>);
+        output = reactStringReplace(output, new RegExp("(" + icon.food + ")", "g"), () => <span style={{ color: 'green' }}>{icon.food}</span>);
+        output = reactStringReplace(output, new RegExp("(" + icon.snake + ")", "g"), () => <span style={{ color: 'skyblue' }}>{icon.snake}</span>);
+        output = reactStringReplace(output, new RegExp("(" + icon.snakeHead + ")", "g"), () => <span style={{ color: 'darkblue' }}>{icon.snake}</span>);
         return output;
     }
 
     render() {
         return (
             <div className="base">
-                {this.ToString()}
+                {this.ToString()}<br/>
                 <Button onClick={this.Reset.bind(this)}>Reset</Button>
+                <span>
+                    <br/><br/>Keybinds
+                    <br/>Up    - W
+                    <br/>Down  - S
+                    <br/>Left  - A
+                    <br/>Right - D
+                </span>
             </div>
         );
     }
@@ -211,28 +215,5 @@ class Player {
             this.body[i] = { ...this.body[i - 1] };
         }
         this.Head().Add(movement[direction]);
-    }
-}
-
-class Food {
-    constructor() {
-        this.positions = new Array();
-    }
-
-    Amount() {
-        return this.positions.length;
-    }
-
-    Add(position) {
-        this.positions.push(position);
-    }
-
-    Remove(position) {
-        for (let i = 0; i < this.positions.length; i++) {
-            if (this.positions[i].Equal(position)) {
-                this.positions.splice(i, 1);
-                return;
-            }
-        }
     }
 }
