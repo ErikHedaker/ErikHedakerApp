@@ -1,4 +1,5 @@
 ﻿import React, { Component } from 'react';
+import './CurriculumVitae.css';
 
 export class CurriculumVitae extends Component {
     static displayName = CurriculumVitae.name;
@@ -6,7 +7,20 @@ export class CurriculumVitae extends Component {
     render() {
         return (
             <div>
-                <h1>This is my Curriculum Vitae</h1>
+                <div className="box">
+                    <h4>Kontakt</h4>
+                    <p>
+                        E-mail: erik@hedaker.se<br/>
+                        Adress: Sergels Väg 14B, 21757 Malmö
+                    </p>
+                </div>
+                <br/><br/>
+                <div className="box">
+                    <h4>Utbildning</h4>
+                    <p>
+                        Pauliskolan, Teknikprogrammet (2013 - 2016, slutförd via Komvux 2019)
+                    </p>
+                </div>
             </div>
         );
     }

@@ -1,8 +1,25 @@
-﻿.base {
+﻿.box {
+    background: white;
+    border: 1px solid lightgrey;
+    border-radius: 30px;
+    padding: 30px;
+}
+
+.game-display {
+    display: inline-block;
     font-family: "Courier New", Courier, monospace;
-    font-size: 30px;
-    line-height: 75%;
+    font-size: 42px;
+    line-height: 70%;
     text-align: center;
     white-space: pre-wrap;
-    color: #000000;
+    color: black;
+}
+
+.info {
+    display: inline-block;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 16px;
+    line-height: normal;
+    text-align: left;
+    color: black;
 }

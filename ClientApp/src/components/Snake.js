@@ -1,5 +1,4 @@
 ﻿import React, { Component } from 'react';
-import { Button } from 'reactstrap';
 import './Snake.css';
 
 class Vector2i {
@@ -90,28 +89,34 @@ export class Snake extends Component {
         this.food = [];
         this.direction = "east";
         this.directionPrev = "east";
-        this.interval = 100;
-        this.intervalID = setInterval(this.Update.bind(this), this.interval);
+        this.intervalID = setInterval(this.Update.bind(this), 100);
     }
 
     KeyPress(event) {
         event = event || window.event;
         switch (event.keyCode) {
             case 87:
-                if (this.directionPrev !== "south")
+                if (this.directionPrev !== "south") {
                     this.direction = "north";
+                }
                 break;
             case 68:
-                if (this.directionPrev !== "west")
+                if (this.directionPrev !== "west") {
                     this.direction = "east";
+                }
                 break;
             case 83:
-                if (this.directionPrev !== "north")
+                if (this.directionPrev !== "north") {
                     this.direction = "south";
+                }
                 break;
             case 65:
-                if (this.directionPrev !== "east")
+                if (this.directionPrev !== "east") {
                     this.direction = "west";
+                }
+                break;
+            case 82:
+                this.Reset();
                 break;
         }
     }
@@ -132,7 +137,6 @@ export class Snake extends Component {
         if (CollisionCheckArrayVector2i([this.player.Head()], this.obstacles) ||
             CollisionCheckArrayVector2i([this.player.Head()], this.player.body.slice(1))) {
             clearInterval(this.intervalID);
-            return;
         }
     }
 
@@ -163,14 +167,14 @@ export class Snake extends Component {
         this.obstacles.forEach(position => {
             output[Vector2iToArrayIndex(position, this.size)] = icon.obstacle;
         }, this);
-        this.food.forEach(position =>  {
+        this.food.forEach(position => {
             output[Vector2iToArrayIndex(position, this.size)] = icon.food;
         }, this);
-        this.player.body.forEach(position =>  {
+        this.player.body.forEach(position => {
             output[Vector2iToArrayIndex(position, this.size)] = icon.snake;
         }, this);
         output[Vector2iToArrayIndex(this.player.Head(), this.size)] = icon.snakeHead;
-        for (let i = this.size.y; i > 0; i--) {
+        for (let i = this.size.y - 1; i > 0; i--) {
             output.splice(this.size.x * i, 0, '\n');
         }
         output = reactStringReplace(output, new RegExp("(" + icon.obstacle + ")", "g"), () => <span style={{ color: 'red' }}>{icon.obstacle}</span>);
@@ -182,16 +186,20 @@ export class Snake extends Component {
 
     render() {
         return (
-            <div className="base">
-                {this.ToString()}<br/>
-                <Button onClick={this.Reset.bind(this)}>Reset</Button>
-                <span>
-                    <br/><br/>Keybinds
-                    <br/>Up    - W
-                    <br/>Down  - S
-                    <br/>Left  - A
-                    <br/>Right - D
-                </span>
+            <div>
+                <div style={{ textAlign: 'center' }}>
+                    <div className="box game-display">
+                        {this.ToString()}<br />
+                    </div><br />
+                </div>
+                <div className="box info">
+                    Keybinds
+                    <br/>[W] Up
+                    <br/>[S] Down
+                    <br/>[A] Left
+                    <br/>[D] Right
+                    <br/>[R] Reset
+                </div>
             </div>
         );
     }
