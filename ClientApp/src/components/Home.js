@@ -9,7 +9,7 @@ export class Home extends Component {
             <div className="box">
                 <span>
                     V&auml;lkommen!<br/>
-                    Bes&ouml;k min <a href="https://github.com/ErikHedaker">Github</a> f&ouml;r k&auml;llkoden av sidan.
+                    Bes&ouml;k min <a href="https://github.com/ErikHedaker?tab=repositories">Github</a> f&ouml;r k&auml;llkoden av sidan.
                 </span>
             </div>
         );

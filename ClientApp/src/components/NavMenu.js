@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Navbar, NavbarBrand, NavItem, NavLink, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import './NavMenu.css';
 
 export class NavMenu extends Component {
     static displayName = NavMenu.name;
@@ -23,7 +22,7 @@ export class NavMenu extends Component {
                             </UncontrolledDropdown>
                             &nbsp;&nbsp;&nbsp;&nbsp;
                             <NavItem>
-                                <NavLink tag={Link} className="text-dark" to="/CurriculumVitae">Om mig & CV</NavLink>
+                                <NavLink tag={Link} className="text-dark" to="/AboutMe">Om mig & CV</NavLink>
                             </NavItem>
                         </ul>
                     </Container>

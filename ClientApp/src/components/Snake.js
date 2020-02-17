@@ -1,4 +1,5 @@
 ﻿import React, { Component } from 'react';
+import { Button } from 'reactstrap';
 import './Snake.css';
 
 class Vector2i {
@@ -77,6 +78,7 @@ export class Snake extends Component {
 
     constructor(props) {
         super(props);
+        this.toggleDisplay = true;
         this.Reset();
         document.onkeydown = this.KeyPress.bind(this);
     }
@@ -84,12 +86,17 @@ export class Snake extends Component {
     Reset() {
         clearInterval(this.intervalID);
         this.size = new Vector2i(17, 17);
-        this.player = new Player(new Vector2i(1, 8), 5);
+        this.player = new Player(new Vector2i(1, Math.floor(this.size.y / 2)), 5);
         this.obstacles = BorderObstacles(this.size);
         this.food = [];
         this.direction = "east";
-        this.directionPrev = "east";
+        this.directionPrev = this.direction;
         this.intervalID = setInterval(this.Update.bind(this), 100);
+    }
+
+    ToggleDisplay() {
+        this.toggleDisplay = !this.toggleDisplay;
+        this.forceUpdate();
     }
 
     KeyPress(event) {
@@ -117,6 +124,9 @@ export class Snake extends Component {
                 break;
             case 82:
                 this.Reset();
+                break;
+            case 70:
+                this.ToggleDisplay();
                 break;
         }
     }
@@ -155,7 +165,7 @@ export class Snake extends Component {
         }
     }
 
-    ToString() {
+    ToCharacters() {
         const icon = {
             empty: '-',
             obstacle: 'H',
@@ -180,25 +190,63 @@ export class Snake extends Component {
         output = reactStringReplace(output, new RegExp("(" + icon.obstacle + ")", "g"), () => <span style={{ color: 'red' }}>{icon.obstacle}</span>);
         output = reactStringReplace(output, new RegExp("(" + icon.food + ")", "g"), () => <span style={{ color: 'green' }}>{icon.food}</span>);
         output = reactStringReplace(output, new RegExp("(" + icon.snake + ")", "g"), () => <span style={{ color: 'skyblue' }}>{icon.snake}</span>);
-        output = reactStringReplace(output, new RegExp("(" + icon.snakeHead + ")", "g"), () => <span style={{ color: 'darkblue' }}>{icon.snake}</span>);
+        output = reactStringReplace(output, new RegExp("(" + icon.snakeHead + ")", "g"), () => <span style={{ color: 'blue' }}>{icon.snake}</span>);
         return output;
+    }
+
+    RenderCharacters() {
+        return (
+            <div style={{ textAlign: 'center' }}>
+                <div className="box game-characters">
+                    {this.ToCharacters()}
+                </div>
+            </div>
+        );
+    }
+
+    RenderGraphics() {
+        let DivRender = (positions, size, string) => {
+            return positions.map(position => {
+                return (
+                    <div className={`game-graphics-base game-graphics-${string}`} style={{
+                        top:  ((position.y / size.y) * 100) + '%',
+                        left: ((position.x / size.x) * 100) + '%'
+                    }}></div>
+                );
+            })
+        };
+
+        return (
+            <div style={{ textAlign: 'center' }}>
+                <div className="game-graphics-area" style={{ width: this.size.x * 30, height: this.size.y * 30 }}>
+                    {DivRender(this.obstacles, this.size, "obstacles")}
+                    {DivRender(this.food, this.size, "food")}
+                    {DivRender(this.player.body.slice(1), this.size, "snake")}
+                    {DivRender([this.player.Head()], this.size, "snake-head")}
+
+                </div>
+            </div>
+        );
     }
 
     render() {
         return (
             <div>
+                {this.toggleDisplay ? this.RenderCharacters() : this.RenderGraphics()}<br/>
+                <Button className="button-reset" onClick={this.ToggleDisplay.bind(this)}>Toggle Display</Button><br/>
                 <div style={{ textAlign: 'center' }}>
-                    <div className="box game-display">
-                        {this.ToString()}<br />
-                    </div><br />
-                </div>
-                <div className="box info">
-                    Keybinds
+                    <div className="box text-base text-length">
+                        Length: {this.player.body.length}
+                    </div>
+                </div><br/>
+                <div className="box text-base text-controls">
+                    <h4><strong>Controls</strong></h4>
                     <br/>[W] Up
                     <br/>[S] Down
                     <br/>[A] Left
                     <br/>[D] Right
                     <br/>[R] Reset
+                    <br/>[F] Display
                 </div>
             </div>
         );

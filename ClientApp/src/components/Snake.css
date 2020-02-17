@@ -5,7 +5,38 @@
     padding: 30px;
 }
 
-.game-display {
+.text-base {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 16px;
+    line-height: normal;
+    text-align: left;
+    color: black;
+}
+
+.text-controls {
+    position: fixed;
+    bottom: 50%;
+    left: 0;
+}
+
+.text-length {
+    display: inline-block;
+}
+
+.config {
+    position: fixed;
+    bottom: 50%;
+    right: 0;
+}
+
+.button-reset {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 300px;
+}
+
+.game-characters {
     display: inline-block;
     font-family: "Courier New", Courier, monospace;
     font-size: 42px;
@@ -15,11 +46,34 @@
     color: black;
 }
 
-.info {
+.game-graphics-area {
+    top: 30px;
     display: inline-block;
-    font-family: "Courier New", Courier, monospace;
-    font-size: 16px;
-    line-height: normal;
-    text-align: left;
-    color: black;
+    position: relative;
+}
+
+.game-graphics-base {
+    position: absolute;
+    width: 5%;
+    height: 5%;
+}
+
+.game-graphics-obstacles {
+    background: red;
+    z-index: 1;
+}
+
+.game-graphics-food {
+    background: green;
+    z-index: 1;
+}
+
+.game-graphics-snake {
+    background: skyblue;
+    z-index: 2;
+}
+
+.game-graphics-snake-head {
+    background: blue;
+    z-index: 2;
 }
