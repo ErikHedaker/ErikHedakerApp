@@ -1,20 +1,24 @@
 ﻿import React, { Component } from 'react';
-import { Button } from 'reactstrap';
+import { Button, InputGroup, InputGroupAddon, InputGroupText, Input } from 'reactstrap';
 import './Snake.css';
 
-class Vector2i {
-    constructor(xTemp, yTemp) {
-        this.x = xTemp;
-        this.y = yTemp;
+class Vector2i
+{
+    constructor( x, y )
+    {
+        this.x = x;
+        this.y = y;
     }
 
-    Add(other) {
+    Add( other )
+    {
         this.x += other.x;
         this.y += other.y;
         return this;
     }
 
-    Equal(other) {
+    Equal( other )
+    {
         return (
             this.x === other.x &&
             this.y === other.y
@@ -22,24 +26,42 @@ class Vector2i {
     }
 }
 
-const movement = {
-    ["north"]: new Vector2i( 0, -1),
-    ["east"]:  new Vector2i( 1,  0),
-    ["south"]: new Vector2i( 0,  1),
-    ["west"]:  new Vector2i(-1,  0)
+const directionMovement =
+{
+    ["north"]: new Vector2i( 0, -1 ),
+    ["east"]: new Vector2i( 1, 0 ),
+    ["south"]: new Vector2i( 0, 1 ),
+    ["west"]: new Vector2i( -1, 0 )
+};
+const directionOpposite =
+{
+    ["north"]: "south",
+    ["east"]: "west",
+    ["south"]: "north",
+    ["west"]: "east"
+};
+const directionCode =
+{
+    [87]: "north",
+    [68]: "east",
+    [83]: "south",
+    [65]: "west"
 };
 
-const reactStringReplace = require('react-string-replace');
+const reactStringReplace = require( 'react-string-replace' );
 
-function RandomNumberGenerator(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+function RandomNumberGenerator( min, max )
+{
+    return Math.floor( Math.random() * ( max - min + 1 ) ) + min;
 }
 
-function Vector2iToArrayIndex(position, size) {
-    return (position.y * size.x) + position.x;
+function Vector2iToArrayIndex( position, size )
+{
+    return ( position.y * size.x ) + position.x;
 }
 
-function OnBorder(position, size) {
+function OnBorder( position, size )
+{
     return (
         position.x === 0 ||
         position.y === 0 ||
@@ -48,228 +70,356 @@ function OnBorder(position, size) {
     );
 }
 
-function BorderObstacles(size) {
-    let obstacles = new Array();
-    for (let y = 0; y < size.y; y++) {
-        for (let x = 0; x < size.x; x++) {
-            const position = new Vector2i(x, y);
-            if (OnBorder(position, size)) {
-                obstacles.push(position);
+function BorderObstacles( size )
+{
+    let obstacles = [];
+    for( let y = 0; y < size.y; y++ )
+    {
+        for( let x = 0; x < size.x; x++ )
+        {
+            const position = new Vector2i( x, y );
+            if( OnBorder( position, size ) )
+            {
+                obstacles.push( position );
             }
         }
     }
     return obstacles;
 }
 
-function CollisionCheckArrayVector2i(first, second) {
+function CollisionCheckArrayVector2i( first, second )
+{
     let collision = false;
-    first.forEach(one => {
-        second.forEach(two => {
-            if (one.Equal(two)) {
+    first.forEach( one =>
+    {
+        second.forEach( two =>
+        {
+            if( one.Equal( two ) )
+            {
                 collision = true;
             }
-        });
-    });
+        } );
+    } );
     return collision;
 }
 
-export class Snake extends Component {
+export class Snake extends Component
+{
     static displayName = Snake.name;
 
-    constructor(props) {
-        super(props);
+    constructor( props )
+    {
+        super( props );
+        this.config = {
+            size: new Vector2i( 17, 17 ),
+            length: 5,
+            food: 2,
+            interval: 100,
+            sizeSet: function( value )
+            {
+                this.size.x = Number.isInteger( value.x ) && value.x > 0 ? value.x : 17;
+                this.size.y = Number.isInteger( value.y ) && value.y > 0 ? value.y : 17;
+            },
+            lengthSet: function( value )
+            {
+                this.length = Number.isInteger( value ) && value > 1 ? value : 5;
+            },
+            foodSet: function( value )
+            {
+                this.food = Number.isInteger( value ) && value > 0 ? value : 2;
+            },
+            intervalSet: function( value )
+            {
+                this.interval = Number.isInteger( value ) && value > 0 ? value : 100;
+            },
+        };
         this.toggleDisplay = true;
-        this.Reset();
-        document.onkeydown = this.KeyPress.bind(this);
+        this.Restart( this.config );
+        document.onkeydown = this.KeyPress.bind( this );
     }
 
-    Reset() {
-        clearInterval(this.intervalID);
-        this.size = new Vector2i(17, 17);
-        this.player = new Player(new Vector2i(1, Math.floor(this.size.y / 2)), 5);
-        this.obstacles = BorderObstacles(this.size);
+    Restart( config )
+    {
+        clearInterval( this.intervalID );
+        this.size = config.size;
+        this.player = new Player( new Vector2i( 1, Math.floor( this.size.y / 2 ) ), config.length );
+        this.obstacles = BorderObstacles( this.size );
+        this.foodAmount = config.food;
         this.food = [];
         this.direction = "east";
         this.directionPrev = this.direction;
-        this.intervalID = setInterval(this.Update.bind(this), 100);
+        this.intervalID = setInterval( this.Update.bind( this ), config.interval );
     }
 
-    ToggleDisplay() {
+    ToggleDisplay()
+    {
         this.toggleDisplay = !this.toggleDisplay;
         this.forceUpdate();
     }
 
-    KeyPress(event) {
+    KeyPress( event )
+    {
         event = event || window.event;
-        switch (event.keyCode) {
+        switch( event.keyCode )
+        {
             case 87:
-                if (this.directionPrev !== "south") {
-                    this.direction = "north";
-                }
-                break;
             case 68:
-                if (this.directionPrev !== "west") {
-                    this.direction = "east";
-                }
-                break;
             case 83:
-                if (this.directionPrev !== "north") {
-                    this.direction = "south";
-                }
-                break;
             case 65:
-                if (this.directionPrev !== "east") {
-                    this.direction = "west";
+                const directionKey = directionCode[event.keyCode];
+                const oppositePrev = directionOpposite[this.directionPrev];
+                if( directionKey !== oppositePrev )
+                {
+                    this.direction = directionKey;
                 }
                 break;
             case 82:
-                this.Reset();
+                this.Restart( this.config );
                 break;
             case 70:
                 this.ToggleDisplay();
                 break;
+            default:
+                break;
         }
     }
 
-    Update() {
-        this.player.Move(this.direction);
+    Update()
+    {
+        this.player.Move( this.direction );
         this.directionPrev = this.direction;
-        for (let i = this.food.length - 1; i >= 0; i--) {
-            if (this.food[i].Equal(this.player.Head())) {
-                this.food.splice(i, 1);
+        for( let i = this.food.length - 1; i >= 0; i-- )
+        {
+            if( this.food[i].Equal( this.player.Head() ) )
+            {
+                this.food.splice( i, 1 );
                 this.player.Grow();
             }
         }
-        while (this.food.length < 2) {
+        while( this.food.length < this.foodAmount &&
+               ( this.size.x - 2 ) * ( this.size.y - 2) > this.food.length + this.player.body.length )
+        {
             this.AddRandomFood();
         }
-        this.forceUpdate();
-        if (CollisionCheckArrayVector2i([this.player.Head()], this.obstacles) ||
-            CollisionCheckArrayVector2i([this.player.Head()], this.player.body.slice(1))) {
-            clearInterval(this.intervalID);
+        if( CollisionCheckArrayVector2i( [this.player.Head()], this.obstacles ) ||
+            CollisionCheckArrayVector2i( [this.player.Head()], this.player.body.slice( 1 ) ) )
+        {
+            clearInterval( this.intervalID );
         }
+        this.forceUpdate();
     }
 
-    AddRandomFood() {
-        while (true) {
+    AddRandomFood()
+    {
+        while( true )
+        {
             let random = new Vector2i(
-                RandomNumberGenerator(1, this.size.x - 2),
-                RandomNumberGenerator(1, this.size.y - 2)
+                RandomNumberGenerator( 1, this.size.x - 2 ),
+                RandomNumberGenerator( 1, this.size.y - 2 )
             );
-            if (!CollisionCheckArrayVector2i([random], this.obstacles) &&
-                !CollisionCheckArrayVector2i([random], this.player.body) &&
-                !CollisionCheckArrayVector2i([random], this.food)) {
-                this.food.push(random);
+            if( !CollisionCheckArrayVector2i( [random], this.obstacles ) &&
+                !CollisionCheckArrayVector2i( [random], this.player.body ) &&
+                !CollisionCheckArrayVector2i( [random], this.food ) )
+            {
+                this.food.push( random );
                 return;
             }
         }
     }
 
-    ToCharacters() {
+    RenderCharacters()
+    {
         const icon = {
             empty: '-',
             obstacle: 'H',
             food: 'X',
             snake: 'O',
-            snakeHead: 'P'
+            snakeHeadTemp: 'S'
         };
-        let output = new Array(this.size.x * this.size.y).fill(icon.empty);
-        this.obstacles.forEach(position => {
-            output[Vector2iToArrayIndex(position, this.size)] = icon.obstacle;
-        }, this);
-        this.food.forEach(position => {
-            output[Vector2iToArrayIndex(position, this.size)] = icon.food;
-        }, this);
-        this.player.body.forEach(position => {
-            output[Vector2iToArrayIndex(position, this.size)] = icon.snake;
-        }, this);
-        output[Vector2iToArrayIndex(this.player.Head(), this.size)] = icon.snakeHead;
-        for (let i = this.size.y - 1; i > 0; i--) {
-            output.splice(this.size.x * i, 0, '\n');
+        let output = new Array( this.size.x * this.size.y ).fill( icon.empty );
+        let ChangeCharacter = ( positions, icon ) =>
+        {
+            positions.forEach( position =>
+            {
+                output[Vector2iToArrayIndex( position, this.size )] = icon;
+            }, this );
+        };
+        ChangeCharacter( this.obstacles, icon.obstacle );
+        ChangeCharacter( this.food, icon.food );
+        ChangeCharacter( this.player.body, icon.snake );
+        output[Vector2iToArrayIndex( this.player.Head(), this.size )] = icon.snakeHeadTemp;
+        for( let i = this.size.y - 1; i > 0; i-- )
+        {
+            output.splice( this.size.x * i, 0, '\n' );
         }
-        output = reactStringReplace(output, new RegExp("(" + icon.obstacle + ")", "g"), () => <span style={{ color: 'red' }}>{icon.obstacle}</span>);
-        output = reactStringReplace(output, new RegExp("(" + icon.food + ")", "g"), () => <span style={{ color: 'green' }}>{icon.food}</span>);
-        output = reactStringReplace(output, new RegExp("(" + icon.snake + ")", "g"), () => <span style={{ color: 'skyblue' }}>{icon.snake}</span>);
-        output = reactStringReplace(output, new RegExp("(" + icon.snakeHead + ")", "g"), () => <span style={{ color: 'blue' }}>{icon.snake}</span>);
-        return output;
-    }
-
-    RenderCharacters() {
+        output = reactStringReplace( output, new RegExp( "(" + icon.obstacle + ")", "g" ), () => <span style={{ color: 'red' }}>{icon.obstacle}</span> );
+        output = reactStringReplace( output, new RegExp( "(" + icon.food + ")", "g" ), () => <span style={{ color: 'green' }}>{icon.food}</span> );
+        output = reactStringReplace( output, new RegExp( "(" + icon.snake + ")", "g" ), () => <span style={{ color: 'skyblue' }}>{icon.snake}</span> );
+        output = reactStringReplace( output, new RegExp( "(" + icon.snakeHeadTemp + ")", "g" ), () => <span style={{ color: 'blue' }}>{icon.snake}</span> );
         return (
             <div style={{ textAlign: 'center' }}>
                 <div className="box game-characters">
-                    {this.ToCharacters()}
+                    {output}
                 </div>
             </div>
         );
     }
 
-    RenderGraphics() {
-        let DivRender = (positions, size, string) => {
-            return positions.map(position => {
+    RenderGraphics( sizeBlock, spacing )
+    {
+        let DivBlocks = ( positions, color ) =>
+        {
+            let i = 0;
+            return positions.map( position =>
+            {
                 return (
-                    <div className={`game-graphics-base game-graphics-${string}`} style={{
-                        top:  ((position.y / size.y) * 100) + '%',
-                        left: ((position.x / size.x) * 100) + '%'
+                    <div key={++i} style={{
+                        top: ( ( position.y / this.size.y ) * 100 ) + '%',
+                        left: ( ( position.x / this.size.x ) * 100 ) + '%',
+                        width: ( sizeBlock - spacing ) + "px",
+                        height: ( sizeBlock - spacing ) + "px",
+                        position: "absolute",
+                        background: color
                     }}></div>
                 );
-            })
+            } )
         };
-
         return (
             <div style={{ textAlign: 'center' }}>
-                <div className="game-graphics-area" style={{ width: this.size.x * 30, height: this.size.y * 30 }}>
-                    {DivRender(this.obstacles, this.size, "obstacles")}
-                    {DivRender(this.food, this.size, "food")}
-                    {DivRender(this.player.body.slice(1), this.size, "snake")}
-                    {DivRender([this.player.Head()], this.size, "snake-head")}
-
+                <div className="game-graphics-area" style={{ width: this.size.x * sizeBlock, height: this.size.y * sizeBlock }}>
+                    {DivBlocks( this.obstacles, "red" )}
+                    {DivBlocks( this.food, "green" )}
+                    {DivBlocks( this.player.body.slice( 1 ), "skyblue" )}
+                    {DivBlocks( [this.player.Head()], "blue" )}
                 </div>
             </div>
         );
     }
 
-    render() {
+    ConfigUpdate( state )
+    {
+        this.config.sizeSet( new Vector2i( parseInt( state.width ), parseInt( state.height ) ) );
+        this.config.lengthSet( parseInt( state.length ) );
+        this.config.foodSet( parseInt( state.food ) );
+        this.config.intervalSet( parseInt( state.interval ) );
+        this.Restart( this.config );
+    }
+
+    render()
+    {
         return (
             <div>
-                {this.toggleDisplay ? this.RenderCharacters() : this.RenderGraphics()}<br/>
-                <Button className="button-reset" onClick={this.ToggleDisplay.bind(this)}>Toggle Display</Button><br/>
+                {this.toggleDisplay ? this.RenderGraphics( 30, 1 ) : this.RenderCharacters()}<br />
                 <div style={{ textAlign: 'center' }}>
                     <div className="box text-base text-length">
                         Length: {this.player.body.length}
                     </div>
-                </div><br/>
+                </div><br />
                 <div className="box text-base text-controls">
-                    <h4><strong>Controls</strong></h4>
-                    <br/>[W] Up
-                    <br/>[S] Down
-                    <br/>[A] Left
-                    <br/>[D] Right
-                    <br/>[R] Reset
-                    <br/>[F] Display
+                    <h2 style={{ fontSize: "24px" }}><strong>Controls</strong></h2>
+                    <br />[W] Up
+                    <br />[S] Down
+                    <br />[A] Left
+                    <br />[D] Right
+                    <br />[R] Restart
+                    <br />[F] Display
                 </div>
+                <FormInput config={this.config} ConfigUpdate={this.ConfigUpdate.bind( this )} />
             </div>
         );
     }
 }
 
-class Player {
-    constructor(start, length) {
-        this.body = new Array(length).fill(start);
+class Player
+{
+    constructor( start, length )
+    {
+        this.body = new Array( length ).fill( start );
     }
 
-    Head() {
+    Head()
+    {
         return this.body[0];
     }
 
-    Grow() {
-        this.body.push(this.body[this.body.length - 1]);
+    Grow()
+    {
+        this.body.push( this.body[this.body.length - 1] );
     }
 
-    Move(direction) {
-        for (let i = this.body.length - 1; i > 0; i--) {
+    Move( direction )
+    {
+        for( let i = this.body.length - 1; i > 0; i-- )
+        {
             this.body[i] = { ...this.body[i - 1] };
         }
-        this.Head().Add(movement[direction]);
+        this.Head().Add( directionMovement[direction] );
+    }
+}
+
+class FormInput extends Component
+{
+    constructor( props )
+    {
+        super( props );
+        this.state = {
+            width: this.props.config.size.x,
+            height: this.props.config.size.y,
+            length: this.props.config.length,
+            food: this.props.config.food,
+            interval: this.props.config.interval
+        };
+    }
+
+    HandleInputChange( event )
+    {
+        this.setState( {
+            [event.target.name]: event.target.value
+        } );
+    }
+
+    HandleClick( )
+    {
+        this.props.ConfigUpdate( this.state );
+    }
+
+    render()
+    {
+        return (
+            <div className="box text-base text-config">
+                <h2 style={{ fontSize: "24px" }}><strong>Game Starting Configuration</strong></h2>
+                <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                        <InputGroupText>Board width&nbsp;</InputGroupText>
+                    </InputGroupAddon>
+                    <Input name="width" placeholder={this.props.config.size.x} onChange={this.HandleInputChange.bind( this )} />
+                </InputGroup>
+                <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                        <InputGroupText>Board height</InputGroupText>
+                    </InputGroupAddon>
+                    <Input name="height" placeholder={this.props.config.size.y} onChange={this.HandleInputChange.bind( this )} />
+                </InputGroup>
+                <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                        <InputGroupText>Snake length</InputGroupText>
+                    </InputGroupAddon>
+                    <Input name="length" placeholder={this.props.config.length} onChange={this.HandleInputChange.bind( this )} />
+                </InputGroup>
+                <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                        <InputGroupText>Maximum food</InputGroupText>
+                    </InputGroupAddon>
+                    <Input name="food" placeholder={this.props.config.food} onChange={this.HandleInputChange.bind( this )} />
+                </InputGroup>
+                <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                        <InputGroupText>Game speed&nbsp;&nbsp;</InputGroupText>
+                    </InputGroupAddon>
+                    <Input name="interval" placeholder={this.props.config.interval} onChange={this.HandleInputChange.bind( this )} />
+                </InputGroup>
+                <Button onClick={this.HandleClick.bind( this )}>Save and Restart</Button>
+            </div>
+        );
     }
 }
