@@ -26,28 +26,6 @@ class Vector2i
     }
 }
 
-const directionMovement =
-{
-    ["north"]: new Vector2i( 0, -1 ),
-    ["east"]: new Vector2i( 1, 0 ),
-    ["south"]: new Vector2i( 0, 1 ),
-    ["west"]: new Vector2i( -1, 0 )
-};
-const directionOpposite =
-{
-    ["north"]: "south",
-    ["east"]: "west",
-    ["south"]: "north",
-    ["west"]: "east"
-};
-const directionCode =
-{
-    [87]: "north",
-    [68]: "east",
-    [83]: "south",
-    [65]: "west"
-};
-
 const reactStringReplace = require( 'react-string-replace' );
 
 function RandomNumberGenerator( min, max )
@@ -159,6 +137,20 @@ export class Snake extends Component
 
     KeyPress( event )
     {
+        const directionOpposite =
+        {
+            ["north"]: "south",
+            ["east"]: "west",
+            ["south"]: "north",
+            ["west"]: "east"
+        };
+        const directionCode =
+        {
+            [87]: "north",
+            [68]: "east",
+            [83]: "south",
+            [65]: "west"
+        };
         event = event || window.event;
         switch( event.keyCode )
         {
@@ -349,11 +341,18 @@ class Player
 
     Move( direction )
     {
+        const movement =
+        {
+            ["north"]: new Vector2i( 0, -1 ),
+            ["east"]: new Vector2i( 1, 0 ),
+            ["south"]: new Vector2i( 0, 1 ),
+            ["west"]: new Vector2i( -1, 0 )
+        };
         for( let i = this.body.length - 1; i > 0; i-- )
         {
             this.body[i] = { ...this.body[i - 1] };
         }
-        this.Head().Add( directionMovement[direction] );
+        this.Head().Add( movement[direction] );
     }
 }
 
@@ -383,42 +382,29 @@ class FormInput extends Component
         this.props.ConfigUpdate( this.state );
     }
 
+    InputBox( text, name, placeholder )
+    {
+        return (
+            <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                    <InputGroupText>{text}</InputGroupText>
+                </InputGroupAddon>
+                <Input name={name} placeholder={placeholder} onChange={this.HandleInputChange.bind( this )} />
+            </InputGroup>
+        );
+    }
+
     render()
     {
         return (
             <div className="box text-base text-config">
                 <h2 style={{ fontSize: "24px" }}><strong>Game Starting Configuration</strong></h2>
-                <InputGroup>
-                    <InputGroupAddon addonType="prepend">
-                        <InputGroupText>Board width&nbsp;</InputGroupText>
-                    </InputGroupAddon>
-                    <Input name="width" placeholder={this.props.config.size.x} onChange={this.HandleInputChange.bind( this )} />
-                </InputGroup>
-                <InputGroup>
-                    <InputGroupAddon addonType="prepend">
-                        <InputGroupText>Board height</InputGroupText>
-                    </InputGroupAddon>
-                    <Input name="height" placeholder={this.props.config.size.y} onChange={this.HandleInputChange.bind( this )} />
-                </InputGroup>
-                <InputGroup>
-                    <InputGroupAddon addonType="prepend">
-                        <InputGroupText>Snake length</InputGroupText>
-                    </InputGroupAddon>
-                    <Input name="length" placeholder={this.props.config.length} onChange={this.HandleInputChange.bind( this )} />
-                </InputGroup>
-                <InputGroup>
-                    <InputGroupAddon addonType="prepend">
-                        <InputGroupText>Maximum food</InputGroupText>
-                    </InputGroupAddon>
-                    <Input name="food" placeholder={this.props.config.food} onChange={this.HandleInputChange.bind( this )} />
-                </InputGroup>
-                <InputGroup>
-                    <InputGroupAddon addonType="prepend">
-                        <InputGroupText>Game speed&nbsp;&nbsp;</InputGroupText>
-                    </InputGroupAddon>
-                    <Input name="interval" placeholder={this.props.config.interval} onChange={this.HandleInputChange.bind( this )} />
-                </InputGroup>
-                <Button onClick={this.HandleClick.bind( this )}>Save and Restart</Button>
+                {this.InputBox( "Board width", "width", this.props.config.size.x )}
+                {this.InputBox( "Board height", "height", this.props.config.size.y )}
+                {this.InputBox( "Snake length", "length", this.props.config.length )}
+                {this.InputBox( "Maximum food", "food", this.props.config.food )}
+                {this.InputBox( "Game speed", "interval", this.props.config.interval )}
+                <Button style={{ display: "inline-block" }} onClick={this.HandleClick.bind( this )}>Save and Restart</Button>
             </div>
         );
     }
