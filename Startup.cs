@@ -20,9 +20,7 @@ namespace ErikHedakerApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IDungeoncrawlerProcessHandler, DungeoncrawlerProcessHandler>();
-
-            //services.AddSingleton<IDungeoncrawlerProcessHandler>(DungeoncrawlerController);
+            //services.AddSingleton<IDungeoncrawlerProcessHandler, DungeoncrawlerProcessHandler>();
             services.AddControllersWithViews();
 
             // In production, the React files will be served from this directory
@@ -35,7 +33,7 @@ namespace ErikHedakerApp
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.ApplicationServices.GetService<IDungeoncrawlerProcessHandler>();
+            //app.ApplicationServices.GetService<IDungeoncrawlerProcessHandler>();
 
             if (env.IsDevelopment())
             {
@@ -48,16 +46,13 @@ namespace ErikHedakerApp
 
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
-
             app.UseRouting();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
             });
-
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";

@@ -14,7 +14,7 @@ export class Dungeoncrawler extends Component {
     }
 
     componentDidMount() {
-        this.GetDungeoncrawler();
+        //this.GetDungeoncrawler();
     }
 
     render() {

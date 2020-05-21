@@ -4,25 +4,23 @@ using System.IO;
 using System.Threading;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace ErikHedakerApp.Controllers
 {
     [Route("api/Dungeoncrawler")]
     public class DungeoncrawlerController : Controller
     {
-        private readonly IDungeoncrawlerProcessHandler _dungeoncrawlerPH;
+        private readonly IDungeoncrawlerProcessHandler _accessDPH;
 
         public DungeoncrawlerController(IDungeoncrawlerProcessHandler dungeoncrawlerPH)
         {
-            _dungeoncrawlerPH = dungeoncrawlerPH;
+            _accessDPH = dungeoncrawlerPH;
         }
 
         // GET: api/<controller>
         [HttpGet]
         public DungeoncrawlerView Get()
         {
-            return _dungeoncrawlerPH.Get();
+            return _accessDPH.Get();
         }
 
         /*
