@@ -1,0 +1,16 @@
+.box {
+    background: white;
+    border: 1px solid lightgrey;
+    border-radius: 30px;
+    padding: 30px;
+}
+
+.output {
+    display: inline-block;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 32px;
+    line-height: 70%;
+    text-align: center;
+    white-space: pre-wrap;
+    color: black;
+}

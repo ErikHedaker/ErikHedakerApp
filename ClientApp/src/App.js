@@ -4,6 +4,7 @@ import { Layout } from './components/Layout';
 import { Home } from './components/Home';
 import { Snake } from './components/Snake';
 import { AboutMe } from './components/AboutMe';
+import { Dungeoncrawler } from './components/Dungeoncrawler';
 import './custom.css';
 
 export default class App extends Component {
@@ -13,8 +14,9 @@ export default class App extends Component {
         return (
             <Layout>
                 <Route exact path='/' component={Home}/>
-                <Route path='/Snake' component={Snake}/>
-                <Route path='/AboutMe' component={AboutMe}/>
+                <Route path='/AboutMe' component={AboutMe} />
+                <Route path='/Snake' component={Snake} />
+                <Route path='/Dungeoncrawler' component={Dungeoncrawler} />
             </Layout>
         );
     }

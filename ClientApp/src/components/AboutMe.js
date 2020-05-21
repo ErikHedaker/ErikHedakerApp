@@ -1,4 +1,4 @@
-﻿import React, { Component } from 'react';
+import React, { Component } from 'react';
 import './AboutMe.css';
 
 export class AboutMe extends Component {
