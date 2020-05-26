@@ -76,18 +76,12 @@ export class Snake extends Component {
             length: 5,
             food: 2,
             interval: 100,
-            sizeSet: function( value ) {
+            lengthSet:   function( value ) { this.length   = Number.isInteger( value ) && value > 1 ? value : 5;   },
+            foodSet:     function( value ) { this.food     = Number.isInteger( value ) && value > 0 ? value : 2;   },
+            intervalSet: function( value ) { this.interval = Number.isInteger( value ) && value > 0 ? value : 100; },
+            sizeSet:     function( value ) {
                 this.size.x = Number.isInteger( value.x ) && value.x > 0 ? value.x : 17;
                 this.size.y = Number.isInteger( value.y ) && value.y > 0 ? value.y : 17;
-            },
-            lengthSet: function( value ) {
-                this.length = Number.isInteger( value ) && value > 1 ? value : 5;
-            },
-            foodSet: function( value ) {
-                this.food = Number.isInteger( value ) && value > 0 ? value : 2;
-            },
-            intervalSet: function( value ) {
-                this.interval = Number.isInteger( value ) && value > 0 ? value : 100;
             },
         };
         this.toggleDisplay = true;
@@ -325,13 +319,13 @@ class ConfigurationFormInput extends Component {
         };
     }
 
-    HandleInputChange( event ) {
+    OnInputChange( event ) {
         this.setState( {
             [event.target.name]: event.target.value
         } );
     }
 
-    HandleClick() {
+    OnClick() {
         this.props.ConfigUpdate( this.state );
     }
 
@@ -341,7 +335,7 @@ class ConfigurationFormInput extends Component {
                 <InputGroupAddon addonType="prepend">
                     <InputGroupText>{text}</InputGroupText>
                 </InputGroupAddon>
-                <Input name={name} placeholder={placeholder} onChange={this.HandleInputChange.bind( this )} />
+                <Input name={name} placeholder={placeholder} onChange={this.OnInputChange.bind( this )} />
             </InputGroup>
         );
     }
@@ -355,7 +349,7 @@ class ConfigurationFormInput extends Component {
                 {this.InputBox( "Snake length", "length", this.props.config.length )}
                 {this.InputBox( "Maximum food", "food", this.props.config.food )}
                 {this.InputBox( "Game speed", "interval", this.props.config.interval )}
-                <Button style={{ display: "inline-block" }} onClick={this.HandleClick.bind( this )}>Save and Restart</Button>
+                <Button style={{ display: "inline-block" }} onClick={this.OnClick.bind( this )}>Save and Restart</Button>
             </div>
         );
     }

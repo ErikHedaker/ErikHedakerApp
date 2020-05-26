@@ -2,65 +2,124 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace ErikHedakerApp
 {
-    public interface IDungeoncrawlerProcessHandler
+    public class DungeoncrawlerProcess
     {
-        public DungeoncrawlerView Get();
-        public void Post(string input);
-    }
+        private bool transmitted;
+        private Process process;
+        private List<string> output;
+        private StreamWriter inputStream;
 
-    public class DungeoncrawlerProcessHandler : IDungeoncrawlerProcessHandler
-    {
-        public Process process;
-        public StreamWriter inputStream;
-        public DungeoncrawlerView view;
-
-        public DungeoncrawlerProcessHandler()
+        public DungeoncrawlerProcess()
         {
+            transmitted = false;
             process = new Process();
-            view = new DungeoncrawlerView();
-            process.StartInfo.FileName = @"C:\Users\Erik\source\repos\Dungeoncrawler\Executable\Dungeoncrawler.exe";
-            process.StartInfo.Arguments = "noclear";
+            output = new List<string>();
+            process.StartInfo.FileName = @"C:\Users\Erik\source\repos\Dungeoncrawler\Release\Dungeoncrawler.exe";
+            process.StartInfo.Arguments = "noclear nosave noexit";
+            process.StartInfo.CreateNoWindow = true;
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardInput = true;
-            process.OutputDataReceived += (sender, e) => view.output.Add(e.Data);
+            process.OutputDataReceived += (sender, e) =>
+            {
+                if (transmitted)
+                {
+                    transmitted = false;
+                    output.Clear();
+                }
+
+                output.Add(e.Data);
+            };
             process.Start();
             inputStream = process.StandardInput;
             process.BeginOutputReadLine();
         }
 
-        //~DungeoncrawlerProcessHandler()
-        //{
-        //    process.WaitForExit(1000);
-        //}
-
-        public DungeoncrawlerView Get()
+        ~DungeoncrawlerProcess()
         {
-            return view;
+            process.Kill();
+            process.WaitForExit();
         }
 
-        public void Post(string input)
+        public bool Active( )
         {
-            inputStream.WriteLine(input);
+            return !process.HasExited && output.Count > 0;
+        }
+
+        public bool Changed( )
+        {
+            return Active() && !transmitted;
+        }
+
+        public void Update( string value )
+        {
+            inputStream.WriteLine(value);
+        }
+
+        public List<string> Get()
+        {
+            transmitted = true;
+            return output;
         }
     }
-}
 
-
-namespace ErikHedakerApp
-{
-    public class DungeoncrawlerView
+    public class DungeoncrawlerProcessHandler : IDungeoncrawlerProcessHandler
     {
-        public List<string> output { get; set; }
+        private Dictionary<string, DungeoncrawlerProcess> _processes;
 
-        public DungeoncrawlerView()
+        public DungeoncrawlerProcessHandler()
         {
-            output = new List<string>();
+            _processes = new Dictionary<string, DungeoncrawlerProcess>();
         }
+
+        public bool Exist(string id)
+        {
+            return _processes.ContainsKey(id);
+        }
+
+        public bool Active( string id )
+        {
+            return _processes[id].Active();
+        }
+
+        public bool Changed(string id)
+        {
+            return _processes[id].Changed();
+        }
+
+        public void Add(string id)
+        {
+            _processes.Add(id, new DungeoncrawlerProcess());
+        }
+
+        public void Remove(string id)
+        {
+            _processes.Remove(id);
+        }
+
+        public void Update( string id, string value )
+        {
+            _processes[id].Update( value );
+        }
+
+        public List<string> Get(string id)
+        {
+            return _processes[id].Get();
+        }
+    }
+
+    public interface IDungeoncrawlerProcessHandler
+    {
+        public bool Exist(string id);
+        public bool Active(string id);
+        public bool Changed(string id);
+        public void Add(string id);
+        public void Remove(string id);
+        public void Update(string id, string value);
+        public List<string> Get(string id);
     }
 }
