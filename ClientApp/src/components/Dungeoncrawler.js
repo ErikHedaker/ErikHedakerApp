@@ -38,11 +38,11 @@ export class Dungeoncrawler extends Component {
     render() {
         return (
             <div style={{ textAlign: 'center' }}>
+                {this.state.output}
+                <br />
                 <div className="box">
                     {this.id}
                 </div>
-                <br />
-                {this.state.output}
             </div>
         );
     }

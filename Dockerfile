@@ -2,8 +2,6 @@
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
 WORKDIR /app
-
-# Port configured for Nginx reverse-proxy
 EXPOSE 8100
 ENV ASPNETCORE_URLS http://*:8100
 ENV ASPNETCORE_ENVIRONMENT docker
