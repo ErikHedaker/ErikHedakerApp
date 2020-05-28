@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace ErikHedakerApp.Controllers
 {
@@ -16,32 +17,38 @@ namespace ErikHedakerApp.Controllers
     public class DungeoncrawlerController : Controller
     {
         private readonly IDungeoncrawlerProcessHandler _accessDPH;
+        private readonly ILogger _logger;
+        private readonly List<string> _testList;
 
-        public DungeoncrawlerController(IDungeoncrawlerProcessHandler dungeoncrawlerPH)
+        public DungeoncrawlerController(IDungeoncrawlerProcessHandler dungeoncrawlerPH, ILoggerFactory logFactory)
         {
             _accessDPH = dungeoncrawlerPH;
+            _logger = logFactory.CreateLogger<DungeoncrawlerController>();
+            _testList = new List<string>{ "Test1", "Test2" };
         }
 
         [HttpPost]
         public ActionResult<IEnumerable<string>> POST([FromBody]string id)
         {
-            Console.Write("POST & ");
-            if ( _accessDPH.Exist(id))
+            Console.WriteLine("POST: " + id);
+            if (_accessDPH.Exist(id))
             {
                 return Conflict();
             }
 
             _accessDPH.Add(id);
-            Thread.Sleep(100);
 
-            return GET(id);
+            //TODO: Change to something that actually works
+            Thread.Sleep(2000);
+
+            return Ok(_accessDPH.Get(id));
         }
 
         [HttpDelete("{id}")]
         public ActionResult DELETE(string id)
         {
-            Console.Write("DELETE: " + id + "\n");
-            if( !_accessDPH.Exist(id) )
+            Console.WriteLine("DELETE: " + id);
+            if (!_accessDPH.Exist(id))
             {
                 return NotFound();
             }
@@ -82,7 +89,7 @@ namespace ErikHedakerApp.Controllers
         [HttpPatch("{id}")]
         public ActionResult<IEnumerable<string>> PATCH(string id, [FromBody]string value)
         {
-            Console.Write("PATCH & ");
+            Console.WriteLine("PATCH: " + id);
             if (!_accessDPH.Exist(id))
             {
                 return NotFound();
@@ -91,36 +98,32 @@ namespace ErikHedakerApp.Controllers
             _accessDPH.Update(id, value);
 
             //TODO: Change to something that actually works
-            Thread.Sleep(50);
+            Thread.Sleep(20);
 
-            return GET(id);
+            return Ok(_accessDPH.Get(id));
         }
 
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<string>> GET(string id)
         {
-            Console.Write("GET: " + id + "\n");
+            Console.WriteLine("GET: " + id);
             if (!_accessDPH.Exist(id))
             {
                 return NotFound();
             }
 
-            if (!Utility.DungeoncrawlerTimeout(_accessDPH.Active, id, 1000))
-            {
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-            }
-
             return Ok(_accessDPH.Get(id));
         }
+
+        [Route("/Error")]
+        public IActionResult Error() => Problem();
     }
 
     static class Utility
     {
-        public static bool DungeoncrawlerTimeout( Func<string, bool> check, string id, long timeout )
+        public static bool DungeoncrawlerTimeout(Func<string, bool> check, string id, long timeout)
         {
-            Stopwatch sw = new Stopwatch();
-
-            sw.Start();
+            Stopwatch sw = Stopwatch.StartNew();
 
             while (true)
             {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Runtime.InteropServices;
 
 namespace ErikHedakerApp
 {
@@ -12,14 +13,16 @@ namespace ErikHedakerApp
         private Process process;
         private List<string> output;
         private StreamWriter inputStream;
+        private Stopwatch stopwatch;
 
         public DungeoncrawlerProcess()
         {
+            stopwatch = Stopwatch.StartNew();
             transmitted = false;
             process = new Process();
             output = new List<string>();
-            process.StartInfo.FileName = @"C:\Users\Erik\source\repos\Dungeoncrawler\Release\Dungeoncrawler.exe";
-            process.StartInfo.Arguments = "noclear nosave noexit";
+            process.StartInfo.FileName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "Dungeoncrawler.exe" : "Dungeoncrawler.out";
+            process.StartInfo.Arguments = "noclear nosave noexit noconfig";
             process.StartInfo.CreateNoWindow = true;
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
@@ -44,6 +47,11 @@ namespace ErikHedakerApp
             process.Kill();
             process.WaitForExit();
         }
+        
+        public bool Idle(long threshold)
+        {
+            return stopwatch.ElapsedMilliseconds > threshold;
+        }
 
         public bool Active( )
         {
@@ -58,6 +66,7 @@ namespace ErikHedakerApp
         public void Update( string value )
         {
             inputStream.WriteLine(value);
+            stopwatch.Restart();
         }
 
         public List<string> Get()
@@ -70,10 +79,35 @@ namespace ErikHedakerApp
     public class DungeoncrawlerProcessHandler : IDungeoncrawlerProcessHandler
     {
         private Dictionary<string, DungeoncrawlerProcess> _processes;
+        private readonly long _thresholdIdle;
+        private readonly long _timerRepeat;
+        private readonly Timer _timer;
 
         public DungeoncrawlerProcessHandler()
         {
             _processes = new Dictionary<string, DungeoncrawlerProcess>();
+            _thresholdIdle = 60000;
+            _timerRepeat = 10000;
+            _timer = new Timer(KillIdleProcesses, null, _timerRepeat, _timerRepeat);
+        }
+
+        public void KillIdleProcesses(object state)
+        {
+            List<string> removes = new List<string>();
+
+            foreach ( var pair in _processes)
+            {
+                if( pair.Value.Idle(_thresholdIdle) )
+                {
+                    removes.Add(pair.Key);
+                }
+            }
+
+            foreach(var id in removes)
+            {
+                _processes.Remove(id);
+                Console.WriteLine("IDLE KILL: " + id);
+            }
         }
 
         public bool Exist(string id)

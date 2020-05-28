@@ -8,12 +8,6 @@ function UUIDv4() {
     );
 }
 
-function ErrorOutput(error) {
-    return (
-        <div className="box"><em>{error.message}</em></div>
-    );
-}
-
 export class Dungeoncrawler extends Component {
     static displayName = Dungeoncrawler.name;
 
@@ -25,7 +19,6 @@ export class Dungeoncrawler extends Component {
         this.keyPressed = false;
         this.controller = "api/Dungeoncrawler";
         this.input = "";
-        this.exist = false;
         this.id = UUIDv4();
     }
 
@@ -33,7 +26,6 @@ export class Dungeoncrawler extends Component {
         document.onkeydown = this.OnKeyDown.bind(this);
         document.onkeyup = this.OnKeyUp.bind(this);
         window.onbeforeunload = function () {
-            console.log("Unloading, calling DELETE")
             this.ProcessDelete();
         }
         this.Reset();
@@ -46,14 +38,16 @@ export class Dungeoncrawler extends Component {
     render() {
         return (
             <div style={{ textAlign: 'center' }}>
+                <div className="box">
+                    {this.id}
+                </div>
+                <br />
                 {this.state.output}
-                <br /><br /><br />
-                {this.ResetButton()}
             </div>
         );
     }
 
-    URI() {
+    URL() {
         return this.controller + "/" + this.id;
     }
 
@@ -75,12 +69,6 @@ export class Dungeoncrawler extends Component {
         );
     }
 
-    ResetButton() {
-        return (
-            <Button variant="primary" onClick={ this.Reset.bind(this) }>Start new process on server</Button>
-        );
-    }
-
     OnKeyUp() {
         this.keyPressed = false;
     }
@@ -90,7 +78,7 @@ export class Dungeoncrawler extends Component {
 
         if (!this.keyPressed) {
             this.keyPressed = true;
-            fetch(this.URI(), {
+            fetch(this.URL(), {
                 method: 'PATCH',
                 headers: {
                     'Accept': 'application/json',
@@ -99,20 +87,20 @@ export class Dungeoncrawler extends Component {
                 body: JSON.stringify(String.fromCharCode(event.keyCode))
             }).then(response => {
                 if (!response.ok) {
-                    throw Error(response.statusText);
+                    throw Error(response.status + " " + response.statusText);
                 }
                 return response.json();
             }).then(data => {
                 this.setState({ output: this.TranformOutput(data) })
             }).catch(error => {
-                console.log(error);
-                this.setState({ output: ErrorOutput(error) });
+                this.setState({ output: this.ErrorOutput(error) });
+                console.log(error.response.data);
             });
         }
     }
 
     ProcessDelete() {
-        fetch(this.URI(), {
+        fetch(this.URL(), {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
@@ -120,39 +108,75 @@ export class Dungeoncrawler extends Component {
             }
         }).then(response => {
             if (!response.ok) {
-                throw Error(response.statusText);
+                throw Error(response.status + " " + response.statusText);
             }
         }).catch(error => {
-            console.log(error);
-            this.setState({ output: ErrorOutput(error) });
+            this.setState({ output: this.ErrorOutput(error) });
+            console.log(error.response.data);
         });
-        this.exist = false;
     }
 
     Reset() {
-        if (this.exist) {
-            this.ProcessDelete();
-            this.id = UUIDv4();
-        }
+        fetch(this.URL()).then(response => {
+            if (response.ok) {
+                this.ProcessDelete();
+            }
 
-        fetch(this.controller, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(this.id)
+            this.id = UUIDv4();
+
+            return fetch(this.controller, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(this.id)
+            })
         }).then(response => {
             if (!response.ok) {
-                throw Error(response.statusText);
+                throw Error(response.status + " " + response.statusText);
             }
             return response.json();
         }).then(data => {
             this.setState({ output: this.TranformOutput(data) })
         }).catch(error => {
-            console.log(error);
-            this.setState({ output: ErrorOutput(error) });
+            this.setState({ output: this.ErrorOutput(error) });
+            console.log(error.response.data);
         });
-        this.exist = true;
+    }
+
+    ErrorOutput(error) {
+        return (
+            <div>
+                <div className="box">
+                    <h5>
+                        HTTP Error
+                    </h5>
+                    <br />
+                    <p>
+                        <em>{error.message}</em>
+                    </p>
+                </div>
+                <br /><br /><br />
+                <div className="box" style={{ textAlign: "left" }}>
+                    <p>
+                        The server has responded with an http error code (4xx and 5xx).
+                        <br />
+                        If it's 404 then the likely reason is that the process was automatically killed by the server for being idle for 60 seconds.
+                        <br />
+                        If it's 500 then the process is unresponsive, due to being killed prior or the server OS encountered a problem handling the process.
+                    </p>
+                </div>
+                <br /><br /><br />
+                <div className="box">
+                    <p>
+                        Press the button below to attempt to fix it.
+                    </p>
+                    <Button variant="primary" onClick={this.Reset.bind(this)}>
+                        Start new process on server
+                    </Button>
+                </div>
+            </div>
+        );
     }
 }
