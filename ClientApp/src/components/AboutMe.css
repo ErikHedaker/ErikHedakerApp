@@ -1,5 +1,5 @@
-.box {
-    display: inline-block;
+.box-left {
+    text-align: left;
     background: white;
     border: 1px solid lightgrey;
     border-radius: 30px;

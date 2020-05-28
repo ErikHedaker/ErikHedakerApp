@@ -6,7 +6,7 @@ export class Home extends Component {
     
     render() {
         return (
-            <div className="box">
+            <div className="box-left">
                 <p>
                     <h5>
                         Välkommen!

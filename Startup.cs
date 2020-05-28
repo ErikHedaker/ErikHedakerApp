@@ -37,13 +37,6 @@ namespace ErikHedakerApp
             {
                 configuration.RootPath = "ClientApp/build";
             });
-
-            services.Configure<ForwardedHeadersOptions>(options =>
-            {
-                options.KnownProxies.Add(IPAddress.Parse("78.82.211.90"));
-                options.KnownProxies.Add(IPAddress.Parse("127.0.0.1"));
-                options.KnownProxies.Add(IPAddress.Parse("134.122.77.196"));
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,7 +44,6 @@ namespace ErikHedakerApp
         {
             loggerFactory.AddFile("Logs/Log-{Date}.txt");
             app.ApplicationServices.GetService<IDungeoncrawlerProcessHandler>();
-
             app.UseMiddleware<RequestLoggingMiddleware>();
 
             app.UseForwardedHeaders(new ForwardedHeadersOptions
@@ -59,9 +51,7 @@ namespace ErikHedakerApp
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
 
-            app.UseAuthentication(); //testaddition
-            //app.UseStatusCodePages(); //testaddition
-            //app.UseHttpsRedirection(); //testaddition
+            app.UseAuthentication();
 
             if (env.IsDevelopment())
             {
@@ -69,29 +59,29 @@ namespace ErikHedakerApp
             }
             else
             {
-                app.UseExceptionHandler(errorApp =>
-                {
-                    errorApp.Run(async context =>
-                    {
-                        var exceptionHandlerPathFeature =
-                            context.Features.Get<IExceptionHandlerPathFeature>();
-                        ILogger logger = loggerFactory.CreateLogger<IExceptionHandlerPathFeature>();
-                        logger.LogInformation(exceptionHandlerPathFeature?.Error.Message);
+                //app.UseExceptionHandler(errorApp =>
+                //{
+                //    errorApp.Run(async context =>
+                //    {
+                //        var exceptionHandlerPathFeature =
+                //            context.Features.Get<IExceptionHandlerPathFeature>();
+                //        ILogger logger = loggerFactory.CreateLogger<IExceptionHandlerPathFeature>();
+                //        logger.LogInformation(exceptionHandlerPathFeature?.Error.Message);
 
-                        // Use exceptionHandlerPathFeature to process the exception (for example, 
-                        // logging), but do NOT expose sensitive error information directly to 
-                        // the client.
-                    });
-                });
-                app.UseHsts();
+                //        // Use exceptionHandlerPathFeature to process the exception (for example, 
+                //        // logging), but do NOT expose sensitive error information directly to 
+                //        // the client.
+                //    });
+                //});
+                //app.UseHsts();
             }
 
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
             app.UseRouting();
 
-            app.UseRequestLocalization();
-            app.UseAuthorization();
+            //app.UseRequestLocalization();
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

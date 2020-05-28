@@ -14,7 +14,7 @@ export class Dungeoncrawler extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            output: <div className="box"><em>Loading, please wait.</em></div>,
+            output: <div className="box-center"><em>Loading, please wait.</em></div>,
         };
         this.keyPressed = false;
         this.controller = "api/Dungeoncrawler";
@@ -40,7 +40,7 @@ export class Dungeoncrawler extends Component {
             <div style={{ textAlign: 'center' }}>
                 {this.state.output}
                 <br />
-                <div className="box">
+                <div className="box-center">
                     {this.id}
                 </div>
             </div>
@@ -63,7 +63,7 @@ export class Dungeoncrawler extends Component {
         };
 
         return (
-            <div className="box output">
+            <div className="box-dungeoncrawler output-dungeoncrawler">
                 {OutputLines(data)}
             </div>
         );
@@ -148,7 +148,7 @@ export class Dungeoncrawler extends Component {
     ErrorOutput(error) {
         return (
             <div>
-                <div className="box">
+                <div className="box-center">
                     <h5>
                         HTTP Error
                     </h5>
@@ -158,7 +158,7 @@ export class Dungeoncrawler extends Component {
                     </p>
                 </div>
                 <br /><br /><br />
-                <div className="box" style={{ textAlign: "left" }}>
+                <div className="box-left">
                     <p>
                         The server has responded with an http error code (4xx and 5xx).
                         <br />
@@ -168,7 +168,7 @@ export class Dungeoncrawler extends Component {
                     </p>
                 </div>
                 <br /><br /><br />
-                <div className="box">
+                <div className="box-center">
                     <p>
                         Press the button below to attempt to fix it.
                     </p>

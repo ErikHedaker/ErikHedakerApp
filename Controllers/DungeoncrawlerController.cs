@@ -39,7 +39,7 @@ namespace ErikHedakerApp.Controllers
             _accessDPH.Add(id);
 
             //TODO: Change to something that actually works
-            Thread.Sleep(2000);
+            Thread.Sleep(1000);
 
             return Ok(_accessDPH.Get(id));
         }
@@ -98,7 +98,7 @@ namespace ErikHedakerApp.Controllers
             _accessDPH.Update(id, value);
 
             //TODO: Change to something that actually works
-            Thread.Sleep(20);
+            Thread.Sleep(15);
 
             return Ok(_accessDPH.Get(id));
         }

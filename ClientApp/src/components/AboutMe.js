@@ -7,7 +7,7 @@ export class AboutMe extends Component {
     render() {
         return (
             <div>
-                <div className="box">
+                <div className="box-left">
                     <h5>Kontakt</h5>
                     <p>
                         E-mail: erik@hedaker.se<br />
