@@ -119,44 +119,44 @@ namespace ErikHedakerApp.Controllers
         public IActionResult Error() => Problem();
     }
 
-    static class Utility
-    {
-        public static bool DungeoncrawlerTimeout(Func<string, bool> check, string id, long timeout)
-        {
-            Stopwatch sw = Stopwatch.StartNew();
+    //static class Utility
+    //{
+    //    public static bool DungeoncrawlerTimeout(Func<string, bool> check, string id, long timeout)
+    //    {
+    //        Stopwatch sw = Stopwatch.StartNew();
 
-            while (true)
-            {
-                if (check(id))
-                {
-                    return true;
-                }
+    //        while (true)
+    //        {
+    //            if (check(id))
+    //            {
+    //                return true;
+    //            }
 
-                if (sw.ElapsedMilliseconds > timeout)
-                {
-                    return false;
-                }
+    //            if (sw.ElapsedMilliseconds > timeout)
+    //            {
+    //                return false;
+    //            }
 
-                Thread.Sleep(1);
-            }
-        }
+    //            Thread.Sleep(1);
+    //        }
+    //    }
 
-        public static async Task<TResult> TimeoutAfter<TResult>(this Task<TResult> task, TimeSpan timeout)
-        {
-            using (var timeoutCancellationTokenSource = new CancellationTokenSource())
-            {
-                var completedTask = await Task.WhenAny(task, Task.Delay(timeout, timeoutCancellationTokenSource.Token));
+    //    public static async Task<TResult> TimeoutAfter<TResult>(this Task<TResult> task, TimeSpan timeout)
+    //    {
+    //        using (var timeoutCancellationTokenSource = new CancellationTokenSource())
+    //        {
+    //            var completedTask = await Task.WhenAny(task, Task.Delay(timeout, timeoutCancellationTokenSource.Token));
 
-                if (completedTask == task)
-                {
-                    timeoutCancellationTokenSource.Cancel();
-                    return await task;
-                }
-                else
-                {
-                    throw new TimeoutException("The operation has timed out.");
-                }
-            }
-        }
-    }
+    //            if (completedTask == task)
+    //            {
+    //                timeoutCancellationTokenSource.Cancel();
+    //                return await task;
+    //            }
+    //            else
+    //            {
+    //                throw new TimeoutException("The operation has timed out.");
+    //            }
+    //        }
+    //    }
+    //}
 }
