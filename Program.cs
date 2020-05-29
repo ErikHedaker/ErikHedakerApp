@@ -14,9 +14,7 @@ namespace ErikHedakerApp
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder
-                    //.UseUrls("https://*:5001;http://*:5000") //test addition
-                    .UseStartup<Startup>();
+                    webBuilder.UseStartup<Startup>();
                 });
     }
 }

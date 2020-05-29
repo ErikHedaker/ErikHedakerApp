@@ -40,6 +40,7 @@ export class Dungeoncrawler extends Component {
             <div style={{ textAlign: 'center' }}>
                 {this.state.output}
                 <br />
+                <br />
                 <div className="box-center">
                     {this.id}
                 </div>
@@ -94,7 +95,7 @@ export class Dungeoncrawler extends Component {
                 this.setState({ output: this.TranformOutput(data) })
             }).catch(error => {
                 this.setState({ output: this.ErrorOutput(error) });
-                console.log(error.response.data);
+                console.log(error.message);
             });
         }
     }
@@ -112,7 +113,7 @@ export class Dungeoncrawler extends Component {
             }
         }).catch(error => {
             this.setState({ output: this.ErrorOutput(error) });
-            console.log(error.response.data);
+            console.log(error.message);
         });
     }
 
@@ -121,9 +122,7 @@ export class Dungeoncrawler extends Component {
             if (response.ok) {
                 this.ProcessDelete();
             }
-
             this.id = UUIDv4();
-
             return fetch(this.controller, {
                 method: 'POST',
                 headers: {
@@ -141,7 +140,7 @@ export class Dungeoncrawler extends Component {
             this.setState({ output: this.TranformOutput(data) })
         }).catch(error => {
             this.setState({ output: this.ErrorOutput(error) });
-            console.log(error.response.data);
+            console.log(error.message);
         });
     }
 

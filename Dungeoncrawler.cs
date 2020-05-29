@@ -58,11 +58,6 @@ namespace ErikHedakerApp
             return !process.HasExited && output.Count > 0;
         }
 
-        public bool Changed( )
-        {
-            return Active() && !transmitted;
-        }
-
         public void Update( string value )
         {
             inputStream.WriteLine(value);
@@ -120,11 +115,6 @@ namespace ErikHedakerApp
             return _processes[id].Active();
         }
 
-        public bool Changed(string id)
-        {
-            return _processes[id].Changed();
-        }
-
         public void Add(string id)
         {
             _processes.Add(id, new DungeoncrawlerProcess());
@@ -150,7 +140,6 @@ namespace ErikHedakerApp
     {
         public bool Exist(string id);
         public bool Active(string id);
-        public bool Changed(string id);
         public void Add(string id);
         public void Remove(string id);
         public void Update(string id, string value);

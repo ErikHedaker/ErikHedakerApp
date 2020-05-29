@@ -1,4 +1,5 @@
 .box-center {
+    display: inline-block;
     text-align: center;
     background: white;
     border: 1px solid lightgrey;
@@ -7,6 +8,7 @@
 }
 
 .box-left {
+    display: inline-block;
     text-align: left;
     background: white;
     border: 1px solid lightgrey;
@@ -15,6 +17,7 @@
 }
 
 .box-dungeoncrawler {
+    display: inline-block;
     background: black;
     border: 1px solid lightgrey;
     border-radius: 30px;
