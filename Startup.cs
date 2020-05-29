@@ -11,59 +11,56 @@ namespace ErikHedakerApp
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup( IConfiguration configuration )
         {
             Configuration = configuration;
         }
-
         public IConfiguration Configuration { get; }
-
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices( IServiceCollection services )
         {
-            services.AddSingleton<IDungeoncrawlerProcessHandler, DungeoncrawlerProcessHandler>();
-            services.AddControllersWithViews();
+            services.AddSingleton<IDungeoncrawlerProcessHandler, DungeoncrawlerProcessHandler>( );
+            services.AddControllersWithViews( );
 
-            services.AddSpaStaticFiles(configuration =>
+            services.AddSpaStaticFiles( configuration =>
             {
                 configuration.RootPath = "ClientApp/build";
-            });
+            } );
         }
-
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure( IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory )
         {
-            loggerFactory.AddFile("Logs/Log-{Date}.txt");
-            app.UseMiddleware<RequestLoggingMiddleware>();
-            app.ApplicationServices.GetService<IDungeoncrawlerProcessHandler>();
+            loggerFactory.AddFile( "Logs/Log-{Date}.txt" );
+            app.UseMiddleware<RequestLoggingMiddleware>( );
+            app.ApplicationServices.GetService<IDungeoncrawlerProcessHandler>( );
 
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            app.UseForwardedHeaders( new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-            });
+            } );
 
-            if (env.IsDevelopment())
+            if( env.IsDevelopment( ) )
             {
-                app.UseDeveloperExceptionPage();
+                app.UseDeveloperExceptionPage( );
             }
 
-            app.UseStaticFiles();
-            app.UseSpaStaticFiles();
-            app.UseRouting();
+            app.UseStaticFiles( );
+            app.UseSpaStaticFiles( );
+            app.UseRouting( );
 
-            app.UseEndpoints(endpoints =>
+            app.UseEndpoints( endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
-            });
-            app.UseSpa(spa =>
+                    pattern: "{controller}/{action=Index}/{id?}" );
+            } );
+            app.UseSpa( spa =>
             {
                 spa.Options.SourcePath = "ClientApp";
 
-                if (env.IsDevelopment())
+                if( env.IsDevelopment( ) )
                 {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
+                    spa.UseReactDevelopmentServer( npmScript: "start" );
                 }
-            });
+            } );
         }
     }
 }

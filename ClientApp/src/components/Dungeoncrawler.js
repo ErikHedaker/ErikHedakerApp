@@ -13,67 +13,33 @@ export class Dungeoncrawler extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            output: <div className="box-center"><em>Loading, please wait.</em></div>,
-        };
+        this.state = { output: <div className="box-center"><em>Loading, please wait.</em></div> };
         this.keyPressed = false;
         this.controller = "api/Dungeoncrawler";
-        this.input = "";
-        this.id = UUIDv4();
+        this.id = "temp";
     }
-
     componentDidMount() {
         document.onkeydown = this.OnKeyDown.bind(this);
         document.onkeyup = this.OnKeyUp.bind(this);
-        window.onbeforeunload = function () {
-            this.ProcessDelete();
-        }
+        window.onbeforeunload = () => this.ProcessDelete();
         this.Reset();
     }
-
     componentWillUnmount() {
         this.ProcessDelete();
     }
-
     render() {
         return (
             <div style={{ textAlign: 'center' }}>
                 {this.state.output}
-                <br />
-                <br />
-                <div className="box-center">
-                    {this.id}
-                </div>
             </div>
         );
     }
-
     URL() {
         return this.controller + "/" + this.id;
     }
-
-    TranformOutput(data) {
-        let OutputLines = lines => {
-            return lines.map((line, index) => {
-                return (
-                    <p key={index}>
-                        {line}
-                    </p>
-                );
-            });
-        };
-
-        return (
-            <div className="box-dungeoncrawler output-dungeoncrawler">
-                {OutputLines(data)}
-            </div>
-        );
-    }
-
     OnKeyUp() {
         this.keyPressed = false;
     }
-
     OnKeyDown(event) {
         event = event || window.event;
 
@@ -99,7 +65,6 @@ export class Dungeoncrawler extends Component {
             });
         }
     }
-
     ProcessDelete() {
         fetch(this.URL(), {
             method: 'DELETE',
@@ -116,7 +81,6 @@ export class Dungeoncrawler extends Component {
             console.log(error.message);
         });
     }
-
     Reset() {
         fetch(this.URL()).then(response => {
             if (response.ok) {
@@ -143,7 +107,23 @@ export class Dungeoncrawler extends Component {
             console.log(error.message);
         });
     }
+    TranformOutput(data) {
+        let OutputLines = lines => {
+            return lines.map((line, index) => {
+                return (
+                    <p key={index}>
+                        {line}
+                    </p>
+                );
+            });
+        };
 
+        return (
+            <div className="box-dungeoncrawler output-dungeoncrawler">
+                {OutputLines(data)}
+            </div>
+        );
+    }
     ErrorOutput(error) {
         return (
             <div>
