@@ -5,7 +5,6 @@ import { Home } from './components/Home';
 import { Snake } from './components/Snake';
 import { AboutMe } from './components/AboutMe';
 import { Dungeoncrawler } from './components/Dungeoncrawler';
-import './custom.css';
 
 export default class App extends Component {
     static displayName = App.name;

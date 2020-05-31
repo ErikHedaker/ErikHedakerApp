@@ -1,6 +1,6 @@
-.box-center {
+.box-left {
     display: inline-block;
-    text-align: center;
+    text-align: left;
     background: white;
     border: 1px solid lightgrey;
     border-radius: 30px;

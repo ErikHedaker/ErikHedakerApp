@@ -13,7 +13,7 @@ export class Dungeoncrawler extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { output: <div className="box-center"><em>Loading, please wait.</em></div> };
+        this.state = { output: [] };
         this.keyPressed = false;
         this.controller = "api/Dungeoncrawler";
         this.id = "temp";
@@ -82,6 +82,7 @@ export class Dungeoncrawler extends Component {
         });
     }
     Reset() {
+        this.setState({ output: <div className="box-center"><em>Loading, please wait</em></div> })
         fetch(this.URL()).then(response => {
             if (response.ok) {
                 this.ProcessDelete();
@@ -94,14 +95,14 @@ export class Dungeoncrawler extends Component {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(this.id)
-            })
+            });
         }).then(response => {
             if (!response.ok) {
                 throw Error(response.status + " " + response.statusText);
             }
             return response.json();
         }).then(data => {
-            this.setState({ output: this.TranformOutput(data) })
+            this.setState({ output: this.TranformOutput(data) });
         }).catch(error => {
             this.setState({ output: this.ErrorOutput(error) });
             console.log(error.message);
@@ -125,6 +126,12 @@ export class Dungeoncrawler extends Component {
         );
     }
     ErrorOutput(error) {
+        let Explaination = message => {
+            let code = message.substr(0, 3);
+            if (code === "404") return "The server killed the Dungeoncrawler process after being idle for 60 seconds";
+            if (code === "500") return "The server encountered an unexpected error and was unable to handle it";
+            return "The server has responded with an http error code (4xx and 5xx)";
+        }
         return (
             <div>
                 <div className="box-center">
@@ -132,29 +139,26 @@ export class Dungeoncrawler extends Component {
                         HTTP Error
                     </h5>
                     <br />
-                    <p>
-                        <em>{error.message}</em>
-                    </p>
+                    <em>
+                        {error.message}
+                    </em>
                 </div>
                 <br /><br /><br />
                 <div className="box-left">
-                    <p>
-                        The server has responded with an http error code (4xx and 5xx).
-                        <br />
-                        If it's 404 then the likely reason is that the process was automatically killed by the server for being idle for 60 seconds.
-                        <br />
-                        If it's 500 then the process is unresponsive, due to being killed prior or the server OS encountered a problem handling the process.
-                    </p>
+                    {Explaination(error.message)}
                 </div>
                 <br /><br /><br />
-                <div className="box-center">
-                    <p>
-                        Press the button below to attempt to fix it.
-                    </p>
-                    <Button variant="primary" onClick={this.Reset.bind(this)}>
-                        Start new process on server
-                    </Button>
-                </div>
+                {this.ResetButton()}
+            </div>
+        );
+    }
+
+    ResetButton() {
+        return (
+            <div className="box-center">
+                <Button variant="primary" onClick={this.Reset.bind(this)}>
+                    Start new process on server
+                </Button>
             </div>
         );
     }

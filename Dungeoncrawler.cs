@@ -9,18 +9,18 @@ namespace ErikHedakerApp
 {
     public class DungeoncrawlerProcess
     {
-        private bool transmitted;
         private Process process;
         private List<string> output;
         private StreamWriter inputStream;
         private Stopwatch stopwatch;
+        private bool transmitted;
 
         public DungeoncrawlerProcess( )
         {
-            stopwatch = Stopwatch.StartNew( );
-            transmitted = false;
             process = new Process( );
             output = new List<string>( );
+            stopwatch = Stopwatch.StartNew( );
+            transmitted = false;
             process.StartInfo.FileName = RuntimeInformation.IsOSPlatform( OSPlatform.Windows ) ? "Dungeoncrawler.exe" : "Dungeoncrawler.out";
             process.StartInfo.Arguments = "noclear nosave noexit noconfig";
             process.StartInfo.CreateNoWindow = true;
@@ -88,9 +88,9 @@ namespace ErikHedakerApp
             _processes = new Dictionary<string, DungeoncrawlerProcess>( );
             _thresholdIdle = 60000;
             _timerRepeat = 10000;
-            _timer = new Timer( KillIdleProcesses, null, _timerRepeat, _timerRepeat );
+            _timer = new Timer( IdleKillProcesses, null, _timerRepeat, _timerRepeat );
         }
-        public void KillIdleProcesses( object state )
+        public void IdleKillProcesses( object state = null )
         {
             List<string> removes = new List<string>( );
 

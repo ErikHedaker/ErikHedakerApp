@@ -9,13 +9,13 @@ namespace ErikHedakerApp
 {
     public class RequestLoggingMiddleware
     {
-        private readonly RequestDelegate next;
-        private readonly ILogger logger;
+        private readonly RequestDelegate _next;
+        private readonly ILogger _logger;
 
         public RequestLoggingMiddleware( RequestDelegate next, ILoggerFactory loggerFactory )
         {
-            this.next = next;
-            logger = loggerFactory.CreateLogger<RequestLoggingMiddleware>( );
+            _next = next;
+            _logger = loggerFactory.CreateLogger<RequestLoggingMiddleware>( );
         }
         public async Task Invoke( HttpContext context )
         {
@@ -34,9 +34,9 @@ namespace ErikHedakerApp
 
             builder.AppendLine( $"Request body:{requestBody}" );
 
-            logger.LogInformation( builder.ToString( ) );
+            _logger.LogInformation( builder.ToString( ) );
 
-            await next( context );
+            await _next( context );
         }
     }
 }

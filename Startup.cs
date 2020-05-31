@@ -29,6 +29,7 @@ namespace ErikHedakerApp
         public void Configure( IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory )
         {
             loggerFactory.AddFile( "Logs/Log-{Date}.txt" );
+            app.UseMiddleware<ExceptionHandlingMiddleware>( );
             app.UseMiddleware<RequestLoggingMiddleware>( );
             app.ApplicationServices.GetService<IDungeoncrawlerProcessHandler>( );
 
@@ -37,15 +38,9 @@ namespace ErikHedakerApp
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             } );
 
-            if( env.IsDevelopment( ) )
-            {
-                app.UseDeveloperExceptionPage( );
-            }
-
             app.UseStaticFiles( );
             app.UseSpaStaticFiles( );
             app.UseRouting( );
-
             app.UseEndpoints( endpoints =>
             {
                 endpoints.MapControllerRoute(

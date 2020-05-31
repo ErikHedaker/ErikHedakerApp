@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using Microsoft.AspNetCore.Http;
@@ -20,6 +21,8 @@ namespace ErikHedakerApp.Controllers
         [HttpPost]
         public ActionResult<IEnumerable<string>> POST( [FromBody] string id )
         {
+            Stopwatch stopwatch = Stopwatch.StartNew( );
+
             if( _accessDPH.Exist( id ) )
             {
                 return Conflict( );
@@ -27,13 +30,11 @@ namespace ErikHedakerApp.Controllers
 
             _accessDPH.Add( id );
 
-            Stopwatch sw = Stopwatch.StartNew( );
-
             while( !_accessDPH.Active( id ) )
             {
-                if( sw.ElapsedMilliseconds > 5000 )
+                if( stopwatch.ElapsedMilliseconds > 5000 )
                 {
-                    return new StatusCodeResult( StatusCodes.Status500InternalServerError );
+                    throw new ProcessUnresponsiveException( "Process is unresposive" );
                 }
 
                 Thread.Sleep( 10 );
@@ -65,8 +66,9 @@ namespace ErikHedakerApp.Controllers
 
             _accessDPH.Update( id, value );
 
-            //TODO: Change to something that actually works
-            Thread.Sleep( 15 );
+            // Process needs time to fetch from input stream, calculate and write to output stream
+            // TODO: Change to something that works logically
+            Thread.Sleep( 25 );
 
             return Ok( _accessDPH.Get( id ) );
         }
@@ -81,8 +83,19 @@ namespace ErikHedakerApp.Controllers
 
             return Ok( _accessDPH.Get( id ) );
         }
+    }
+}
 
-        [Route( "/Error" )]
-        public IActionResult Error( ) => Problem( );
+namespace ErikHedakerApp
+{
+    [Serializable]
+    public class ProcessUnresponsiveException : Exception
+    {
+        public ProcessUnresponsiveException( ) { }
+        public ProcessUnresponsiveException( string message ) : base( message ) { }
+        public ProcessUnresponsiveException( string message, Exception inner ) : base( message, inner ) { }
+        protected ProcessUnresponsiveException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context ) : base( info, context ) { }
     }
 }

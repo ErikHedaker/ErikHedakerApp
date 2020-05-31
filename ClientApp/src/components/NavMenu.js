@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Navbar, NavbarBrand, NavItem, NavLink, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import './NavMenu.css';
 
 export class NavMenu extends Component {
     static displayName = NavMenu.name;
@@ -8,7 +9,7 @@ export class NavMenu extends Component {
     render() {
         return (
             <header>
-                <Navbar className="navbar-expand-sm mb-3" light>
+                <Navbar className="navbar-expand-sm mb-3 bar-gradient" light>
                     <Container>
                         <NavbarBrand tag={Link} to="/">Erik Hedåker</NavbarBrand>
                         <ul className="navbar-nav flex-grow">
