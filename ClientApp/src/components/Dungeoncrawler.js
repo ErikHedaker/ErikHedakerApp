@@ -1,6 +1,5 @@
 ﻿import React, { Component } from 'react';
 import { Button } from 'reactstrap';
-import './Dungeoncrawler.css';
 
 function UUIDv4() {
     return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
@@ -82,7 +81,8 @@ export class Dungeoncrawler extends Component {
         });
     }
     Reset() {
-        this.setState({ output: <div className="box-center"><em>Loading, please wait</em></div> })
+        this.setState({
+            output: <div style={styleBox}><em>Loading, please wait</em></div> })
         fetch(this.URL()).then(response => {
             if (response.ok) {
                 this.ProcessDelete();
@@ -120,7 +120,7 @@ export class Dungeoncrawler extends Component {
         };
 
         return (
-            <div className="box-dungeoncrawler output-dungeoncrawler">
+            <div style={styleOutput}>
                 {OutputLines(data)}
             </div>
         );
@@ -134,7 +134,7 @@ export class Dungeoncrawler extends Component {
         }
         return (
             <div>
-                <div className="box-center">
+                <div style={styleBox}>
                     <h5>
                         HTTP Error
                     </h5>
@@ -144,7 +144,7 @@ export class Dungeoncrawler extends Component {
                     </em>
                 </div>
                 <br /><br /><br />
-                <div className="box-left">
+                <div style={styleBox}>
                     {Explaination(error.message)}
                 </div>
                 <br /><br /><br />
@@ -155,11 +155,35 @@ export class Dungeoncrawler extends Component {
 
     ResetButton() {
         return (
-            <div className="box-center">
+            <div style={styleBox}>
                 <Button variant="primary" onClick={this.Reset.bind(this)}>
                     Start new process on server
                 </Button>
             </div>
         );
     }
+}
+
+let styleBox = {
+    display: "inline-block",
+    textAlign: "center",
+    background: "white",
+    border: "1px solid lightgrey",
+    borderRadius: "30px",
+    padding: "30px"
+}
+
+let styleOutput = {
+    display: "inline-block",
+    background: "black",
+    border: "1px solid lightgrey",
+    borderRadius: "30px",
+    padding: "30px",
+
+    fontFamily: "'Courier New', Courier, monospace",
+    fontSize: "22px",
+    lineHeight: "40%",
+    textAlign: "left",
+    whiteSpace: "pre-wrap",
+    color: "white"
 }

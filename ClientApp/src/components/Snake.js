@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Button, InputGroup, InputGroupAddon, InputGroupText, Input } from 'reactstrap';
-import './Snake.css';
 
 const reactStringReplace = require( 'react-string-replace' );
 
@@ -214,7 +213,7 @@ export class Snake extends Component {
         output = reactStringReplace( output, new RegExp( "(" + icon.snakeHeadTemp + ")", "g" ), () => <span style={{ color: 'blue' }}>{icon.snake}</span> );
         return (
             <div style={{ textAlign: 'center' }}>
-                <div className="box game-characters">
+                <div style={Object.assign({}, styleBox, styleGameCharacters)}>
                     {output}
                 </div>
             </div>
@@ -236,9 +235,13 @@ export class Snake extends Component {
                 );
             } )
         };
+        let areaPlayable = {
+            width: this.size.x * sizeBlock,
+            height: this.size.y * sizeBlock
+        }
         return (
             <div style={{ textAlign: 'center' }}>
-                <div className="game-graphics-area" style={{ width: this.size.x * sizeBlock, height: this.size.y * sizeBlock }}>
+                <div style={Object.assign({}, styleGameGraphicsArea, areaPlayable)}>
                     {DivBlocks( this.obstacles, "red" )}
                     {DivBlocks( this.food, "green" )}
                     {DivBlocks( this.player.body.slice( 1 ), "skyblue" )}
@@ -259,13 +262,17 @@ export class Snake extends Component {
                 <br />
                 <br />
                 <div style={{ textAlign: 'center' }}>
-                    <div className="box text-base text-length">
+                    <div style={Object.assign({}, styleBox, styleTextBase, { display: "inline-block" })}>
                         Length: {this.player.body.length}
                     </div>
                 </div>
                 <br />
-                <div className="box text-base text-controls">
-                    <h2 style={{ fontSize: "24px" }}><strong>Controls</strong></h2>
+                <div style={Object.assign({}, styleBox, styleTextBase, styleTextControls)}>
+                    <h2 style={{ fontSize: "24px" }}>
+                        <strong>
+                            Controls
+                        </strong>
+                    </h2>
                     <br />[W] Up
                     <br />[S] Down
                     <br />[A] Left
@@ -333,7 +340,9 @@ class ConfigurationFormInput extends Component {
         return (
             <InputGroup>
                 <InputGroupAddon addonType="prepend">
-                    <InputGroupText>{text}</InputGroupText>
+                    <InputGroupText>
+                        {text}
+                    </InputGroupText>
                 </InputGroupAddon>
                 <Input name={name} placeholder={placeholder} onChange={this.OnInputChange.bind( this )} />
             </InputGroup>
@@ -342,15 +351,64 @@ class ConfigurationFormInput extends Component {
 
     render() {
         return (
-            <div className="box text-base text-config">
-                <h2 style={{ fontSize: "20px" }}><strong>Game configuration</strong></h2>
+            <div style={Object.assign({}, styleBox, styleTextBase, styleTextConfig)}>
+                <h2 style={{ fontSize: "20px" }}>
+                    <strong>
+                        Game configuration
+                    </strong>
+                </h2>
                 {this.InputBox( "Board width", "width", this.props.config.size.x )}
                 {this.InputBox( "Board height", "height", this.props.config.size.y )}
                 {this.InputBox( "Snake length", "length", this.props.config.length )}
                 {this.InputBox( "Maximum food", "food", this.props.config.food )}
                 {this.InputBox( "Game speed", "interval", this.props.config.interval )}
-                <Button style={{ display: "inline-block" }} onClick={this.OnClick.bind( this )}>Save and Restart</Button>
+                <Button style={{ display: "inline-block" }} onClick={this.OnClick.bind(this)}>
+                    Save and Restart
+                </Button>
             </div>
         );
     }
+}
+
+let styleBox = {
+    background: "white",
+    border: "1px solid lightgrey",
+    borderRadius: "30px",
+    padding: "30px"
+}
+
+let styleTextBase = {
+    fontFamily: "'Courier New', Courier, monospace",
+    fontSize: "16px",
+    lineHeight: "normal",
+    textAlign: "left",
+    color: "black"
+}
+
+let styleTextControls = {
+    position: "fixed",
+    bottom: "50%",
+    left: "0"
+}
+
+let styleTextConfig = {
+    position: "fixed",
+    bottom: "0",
+    left: "0"
+}
+
+let styleGameCharacters = {
+    display: "inline-block",
+    fontFamily: "'Courier New', Courier, monospace",
+    fontSize: "42px",
+    lineHeight: "70%",
+    textAlign: "center",
+    whiteSpace: "pre-wrap",
+    color: "black"
+}
+
+let styleGameGraphicsArea = {
+    display: "inline-block",
+    position: "relative",
+    top: "30px"
 }

@@ -11,13 +11,17 @@ WORKDIR /src
 COPY ["ErikHedakerApp/ErikHedakerApp.csproj", "ErikHedakerApp/"]
 RUN dotnet restore "ErikHedakerApp/ErikHedakerApp.csproj"
 COPY . .
-WORKDIR "/src/ErikHedakerApp"
+
+FROM node:latest
+WORKDIR /app
+RUN npm install
+COPY . /app
 
 # In order to run npm in docker
-RUN apt-get update -yq && apt-get upgrade -yq && apt-get install -yq curl git nano
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - && apt-get install -yq nodejs build-essential
-RUN npm install -g npm
-RUN npm install
+# RUN apt-get update -yq && apt-get upgrade -yq && apt-get install -yq curl git nano
+# RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - && apt-get install -yq nodejs build-essential
+# RUN npm install -g npm
+# RUN npm install
 
 RUN dotnet build "ErikHedakerApp.csproj" -c Release -o /app/build
 

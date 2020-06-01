@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import './Home.css';
 
 export class Home extends Component {
     static displayName = Home.name;
     
     render() {
         return (
-            <div className="box-left">
-                <h5 style={{ textAlign: "center" }}>
+            <div style={styleBox}>
+                <h5>
                     Välkommen!
                 </h5>
                 <br />
@@ -17,4 +16,13 @@ export class Home extends Component {
             </div>
         );
     }
+}
+
+let styleBox = {
+    display: "inline-block",
+    textAlign: "left",
+    background: "white",
+    border: "1px solid lightgrey",
+    borderRadius: "30px",
+    padding: "30px"
 }
