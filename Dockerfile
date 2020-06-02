@@ -18,6 +18,7 @@ COPY . .
 #COPY . /app
 
 # In order to run npm in docker
+WORKDIR "/src/ErikHedakerApp"
 RUN apt-get update -yq && apt-get upgrade -yq && apt-get install -yq curl git nano
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - && apt-get install -yq nodejs build-essential
 RUN npm install -g npm
