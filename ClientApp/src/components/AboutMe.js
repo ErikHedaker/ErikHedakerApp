@@ -1,28 +1,16 @@
-import React, { Component } from 'react';
+import React from 'react';
+import './Standard.css';
 
-export class AboutMe extends Component {
-    static displayName = AboutMe.name;
-
-    render() {
-        return (
-            <div style={styleBox}>
-                <h5>
-                    Kontakt
-                </h5>
-                <br />
-                E-mail: erik@hedaker.se
-                <br />
-                Adress: Sergels Väg 14B, 21757 Malmö
-            </div>
-        );
-    }
+export function AboutMe(props) {
+    return (
+        <div className="standard-box">
+            <h5>
+                Kontakt
+            </h5>
+            <br />
+            E-Mail: erik@hedaker.se
+            <br />
+            Mobil: 0722182488
+        </div>
+    );
 }
-
-let styleBox = {
-    display: "inline-block",
-    textAlign: "left",
-    background: "white",
-    border: "1px solid lightgrey",
-    borderRadius: "30px",
-    padding: "30px"
-};

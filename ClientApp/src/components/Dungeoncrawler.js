@@ -1,11 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { Button } from 'reactstrap';
-
-function UUIDv4() {
-    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
-        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-    );
-}
+import './Standard.css';
 
 export class Dungeoncrawler extends Component {
     static displayName = Dungeoncrawler.name;
@@ -28,7 +23,7 @@ export class Dungeoncrawler extends Component {
     }
     render() {
         return (
-            <div style={{ textAlign: 'center' }}>
+            <div style={{ textAlign: "center" }}>
                 {this.state.output}
             </div>
         );
@@ -82,7 +77,7 @@ export class Dungeoncrawler extends Component {
     }
     Reset() {
         this.setState({
-            output: <div style={styleBox}><em>Loading, please wait</em></div> })
+            output: <div className="standard-box"><em>Loading, please wait</em></div> })
         fetch(this.URL()).then(response => {
             if (response.ok) {
                 this.ProcessDelete();
@@ -108,6 +103,15 @@ export class Dungeoncrawler extends Component {
             console.log(error.message);
         });
     }
+    ButtonReset() {
+        return (
+            <div className="standard-box">
+                <Button variant="primary" onClick={this.Reset.bind(this)}>
+                    Start new process on server
+                </Button>
+            </div>
+        );
+    }
     TranformOutput(data) {
         let OutputLines = lines => {
             return lines.map((line, index) => {
@@ -131,10 +135,11 @@ export class Dungeoncrawler extends Component {
             if (code === "404") return "The server killed the Dungeoncrawler process after being idle for 60 seconds";
             if (code === "500") return "The server encountered an unexpected error and was unable to handle it";
             return "The server has responded with an http error code (4xx and 5xx)";
-        }
+        };
+
         return (
             <div>
-                <div style={styleBox}>
+                <div className="standard-box">
                     <h5>
                         HTTP Error
                     </h5>
@@ -144,42 +149,28 @@ export class Dungeoncrawler extends Component {
                     </em>
                 </div>
                 <br /><br /><br />
-                <div style={styleBox}>
+                <div className="standard-box">
                     {Explaination(error.message)}
                 </div>
                 <br /><br /><br />
-                {this.ResetButton()}
-            </div>
-        );
-    }
-
-    ResetButton() {
-        return (
-            <div style={styleBox}>
-                <Button variant="primary" onClick={this.Reset.bind(this)}>
-                    Start new process on server
-                </Button>
+                {this.ButtonReset()}
             </div>
         );
     }
 }
 
-let styleBox = {
-    display: "inline-block",
-    textAlign: "center",
-    background: "white",
-    border: "1px solid lightgrey",
-    borderRadius: "30px",
-    padding: "30px"
+function UUIDv4() {
+    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
 }
 
 let styleOutput = {
     display: "inline-block",
     background: "black",
-    border: "1px solid lightgrey",
-    borderRadius: "30px",
-    padding: "30px",
-
+    border: "3px solid black",
+    borderRadius: "10px",
+    padding: "20px 12px 2px",
     fontFamily: "'Courier New', Courier, monospace",
     fontSize: "22px",
     lineHeight: "40%",

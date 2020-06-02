@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { Container } from 'reactstrap';
 import { NavMenu } from './NavMenu';
-
+import './Standard.css';
 
 export class Layout extends Component {
-    static displayName = Layout.name;
-
     render() {
         return (
             <div>
-                <NavMenu/>
+                <NavMenu />
+                <div className="style-bar-side style-bar-left"  />
+                <div className="style-bar-side style-bar-right" />
                 <Container>
                     {this.props.children}
                 </Container>

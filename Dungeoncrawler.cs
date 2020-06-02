@@ -9,10 +9,10 @@ namespace ErikHedakerApp
 {
     public class DungeoncrawlerProcess
     {
-        private Process process;
-        private List<string> output;
-        private StreamWriter inputStream;
-        private Stopwatch stopwatch;
+        private readonly Process process;
+        private readonly List<string> output;
+        private readonly StreamWriter inputStream;
+        private readonly Stopwatch stopwatch;
         private bool transmitted;
 
         public DungeoncrawlerProcess( )
@@ -78,7 +78,7 @@ namespace ErikHedakerApp
 
     public class DungeoncrawlerProcessHandler : IDungeoncrawlerProcessHandler
     {
-        private Dictionary<string, DungeoncrawlerProcess> _processes;
+        private readonly Dictionary<string, DungeoncrawlerProcess> _processes;
         private readonly long _thresholdIdle;
         private readonly long _timerRepeat;
         private readonly Timer _timer;
