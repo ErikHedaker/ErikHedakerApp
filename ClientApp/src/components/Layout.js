@@ -1,19 +1,17 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Container } from 'reactstrap';
 import { NavMenu } from './NavMenu';
 import './Standard.css';
 
-export class Layout extends Component {
-    render() {
-        return (
-            <div>
-                <NavMenu />
-                <div className="style-bar-side style-bar-left"  />
-                <div className="style-bar-side style-bar-right" />
-                <Container>
-                    {this.props.children}
-                </Container>
-            </div>
-        );
-    }
+export function Layout(props) {
+    return (
+        <div>
+            <NavMenu language={props.language} />
+            <div className="side-bar fade-bar-left"  />
+            <div className="side-bar fade-bar-right" />
+            <Container>
+                {props.children}
+            </Container>
+        </div>
+    );
 }

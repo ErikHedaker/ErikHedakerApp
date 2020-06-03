@@ -8,20 +8,14 @@ export class Snake extends Component {
     constructor(props) {
         super(props);
         this.config = {
-            size: new Vector2i(17, 17),
+            width: 17,
+            height: 17,
             length: 5,
             food: 2,
-            interval: 100,
-            lengthSet: function (value) { this.length = Number.isInteger(value) && value > 1 ? value : 5; },
-            foodSet: function (value) { this.food = Number.isInteger(value) && value > 0 ? value : 2; },
-            intervalSet: function (value) { this.interval = Number.isInteger(value) && value > 0 ? value : 100; },
-            sizeSet: function (value) {
-                this.size.x = Number.isInteger(value.x) && value.x > 0 ? value.x : 17;
-                this.size.y = Number.isInteger(value.y) && value.y > 0 ? value.y : 17;
-            },
+            interval: 100
         };
         this.toggleDisplay = true;
-        this.Restart(this.config);
+        this.Restart();
     }
 
     componentDidMount() {
@@ -34,27 +28,30 @@ export class Snake extends Component {
                 {this.DisplayGame()}
                 <br />
                 <div>
-                    <div className="standard-box" style={styleTextBase}>
+                    <div className="standard-box" style={style.Text}>
                         Length: {this.player.body.length}
                     </div>
                 </div>
-                {this.MovementPanel()}
-                {this.ControlPanel()}
-                <ConfigurationFormInput config={this.config} ConfigUpdate={this.ConfigUpdate.bind(this)} />
+                <div style={{ position: "fixed", left: "39%", bottom: "0" }}>
+                    {this.MovementPanel()}
+                    {this.ControlPanel()}
+                </div>
+                <ConfigurationFormInput config={this.config} SnakeSet={this.SnakeSet.bind(this)} />
             </div>
         );
     }
 
-    Restart(config) {
+    Restart() {
         clearInterval(this.intervalID);
-        this.size = config.size;
-        this.player = new Player(new Vector2i(1, Math.floor(this.size.y / 2)), config.length);
-        this.obstacles = BorderObstacles(this.size);
-        this.foodAmount = config.food;
+        this.width = this.config.width;
+        this.height = this.config.height;
+        this.player = new Player(new Vector2i(1, Math.floor(this.height / 2)), this.config.length);
+        this.obstacles = BorderObstacles(this.width, this.height);
+        this.foodAmount = this.config.food;
         this.food = [];
         this.direction = "east";
         this.directionPrev = this.direction;
-        this.intervalID = setInterval(this.Update.bind(this), config.interval);
+        this.intervalID = setInterval(this.Update.bind(this), this.config.interval);
     }
 
     ToggleDisplay() {
@@ -74,7 +71,7 @@ export class Snake extends Component {
                 this.Movement(key);
                 break;
             case "R":
-                this.Restart(this.config);
+                this.Restart();
                 break;
             case "F":
                 this.ToggleDisplay();
@@ -104,14 +101,8 @@ export class Snake extends Component {
     }
 
     MovementPanel() {
-        let stylePanel = {
-            textAlign: "center",
-            position: "fixed",
-            bottom: "0",
-            left: "38%"
-        };
         return (
-            <div className="standard-box" style={Object.assign({}, styleTextBase, stylePanel)}>
+            <div className="standard-box" style={Object.assign({}, style.Text, { textAlign: "center", margin: "0px 2px" })}>
                 <h2 style={{ fontSize: "24px" }}>
                     <strong>
                         Movement
@@ -128,21 +119,15 @@ export class Snake extends Component {
     }
 
     ControlPanel() {
-        let stylePanel = {
-            textAlign: "center",
-            position: "fixed",
-            bottom: "0",
-            left: "50.1%"
-        };
         return (
-            <div className="standard-box" style={Object.assign({}, styleTextBase, stylePanel)}>
+            <div className="standard-box" style={Object.assign({}, style.Text, { textAlign: "center", margin: "0px 2px" })}>
                 <h2 style={{ fontSize: "24px" }}>
                     <strong>
                         Controls
                     </strong>
                 </h2>
-                <br />{ButtonFunction("[R]", this.Restart.bind(this, this.config), { margin: "1px" })} Restart
-                <br />{ButtonFunction("[F]", this.ToggleDisplay.bind(this),        { margin: "1px" })} Display
+                <br />{ButtonFunction("[R]", this.Restart.bind(this),       { margin: "1px" })} Restart
+                <br />{ButtonFunction("[F]", this.ToggleDisplay.bind(this), { margin: "1px" })} Display
             </div>
         );
     }
@@ -157,7 +142,7 @@ export class Snake extends Component {
             }
         }
         while (this.food.length < this.foodAmount &&
-            (this.size.x - 2) * (this.size.y - 2) > this.food.length + this.player.body.length) {
+            (this.width - 2) * (this.height - 2) > this.food.length + this.player.body.length) {
             this.AddRandomFood();
         }
         if (CollisionCheckArrayVector2i([this.player.Head()], this.obstacles) ||
@@ -167,19 +152,20 @@ export class Snake extends Component {
         this.forceUpdate();
     }
 
-    ConfigUpdate(state) {
-        this.config.sizeSet(new Vector2i(parseInt(state.width), parseInt(state.height)));
-        this.config.lengthSet(parseInt(state.length));
-        this.config.foodSet(parseInt(state.food));
-        this.config.intervalSet(parseInt(state.interval));
-        this.Restart(this.config);
+    SnakeSet(config) {
+        this.config.width    = Number.isInteger(config.width)    && config.width    > 0 ? config.width    : this.config.width;
+        this.config.height   = Number.isInteger(config.height)   && config.height   > 0 ? config.height   : this.config.height;
+        this.config.length   = Number.isInteger(config.length)   && config.length   > 1 ? config.length   : this.config.length;
+        this.config.food     = Number.isInteger(config.food)     && config.food     > 0 ? config.food     : this.config.food;
+        this.config.interval = Number.isInteger(config.interval) && config.interval > 0 ? config.interval : this.config.interval;
+        this.Restart();
     }
 
     AddRandomFood() {
         while (true) {
             let random = new Vector2i(
-                RandomNumberGenerator(1, this.size.x - 2),
-                RandomNumberGenerator(1, this.size.y - 2)
+                RandomNumberGenerator(1, this.width - 2),
+                RandomNumberGenerator(1, this.height - 2)
             );
             if (!CollisionCheckArrayVector2i([random], this.obstacles) &&
                 !CollisionCheckArrayVector2i([random], this.player.body) &&
@@ -198,18 +184,18 @@ export class Snake extends Component {
             snake: 'O',
             snakeHeadTemp: 'S'
         };
-        let output = new Array(this.size.x * this.size.y).fill(icon.empty);
+        let output = new Array(this.width * this.height).fill(icon.empty);
         let ChangeCharacter = (positions, icon) => {
             positions.forEach(position => {
-                output[Vector2iToArrayIndex(position, this.size)] = icon;
+                output[Vector2iToArrayIndex(position, this.width)] = icon;
             }, this);
         };
         ChangeCharacter(this.obstacles, icon.obstacle);
         ChangeCharacter(this.food, icon.food);
         ChangeCharacter(this.player.body, icon.snake);
         ChangeCharacter([this.player.Head()], icon.snakeHeadTemp);
-        for (let i = this.size.y - 1; i > 0; i--) {
-            output.splice(this.size.x * i, 0, '\n');
+        for (let i = this.height - 1; i > 0; i--) {
+            output.splice(this.width * i, 0, '\n');
         }
         output = reactStringReplace(output, new RegExp("(" + icon.obstacle + ")", "g"), () => <span style={{ color: 'red' }}>{icon.obstacle}</span>);
         output = reactStringReplace(output, new RegExp("(" + icon.food + ")", "g"), () => <span style={{ color: 'green' }}>{icon.food}</span>);
@@ -217,7 +203,7 @@ export class Snake extends Component {
         output = reactStringReplace(output, new RegExp("(" + icon.snakeHeadTemp + ")", "g"), () => <span style={{ color: 'blue' }}>{icon.snake}</span>);
         return (
             <div>
-                <div className="standard-box" style={styleGameCharacters}>
+                <div className="standard-box" style={style.Characters}>
                     {output}
                 </div>
             </div>
@@ -228,8 +214,8 @@ export class Snake extends Component {
         let DivBlocks = (positions, color) => {
             return positions.map((position, index) => {
                 let styleBlock = {
-                    top: ((position.y / this.size.y) * 100) + "%",
-                    left: ((position.x / this.size.x) * 100) + "%",
+                    top: ((position.y / this.height) * 100) + "%",
+                    left: ((position.x / this.width) * 100) + "%",
                     width: (sizeBlock - spacing) + "px",
                     height: (sizeBlock - spacing) + "px",
                     position: "absolute",
@@ -239,12 +225,12 @@ export class Snake extends Component {
             })
         };
         let areaPlayable = {
-            width: this.size.x * sizeBlock,
-            height: this.size.y * sizeBlock
+            width: this.width * sizeBlock,
+            height: this.height * sizeBlock
         }
         return (
             <div>
-                <div style={Object.assign({}, styleGameGraphicsArea, areaPlayable)}>
+                <div style={Object.assign({}, style.Graphics, areaPlayable)}>
                     {DivBlocks(this.obstacles, "red")}
                     {DivBlocks(this.food, "green")}
                     {DivBlocks(this.player.body.slice(1), "skyblue")}
@@ -291,53 +277,58 @@ class Player {
 class ConfigurationFormInput extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            width: this.props.config.size.x,
-            height: this.props.config.size.y,
-            length: this.props.config.length,
-            food: this.props.config.food,
-            interval: this.props.config.interval
-        };
+        this.state     = { ...this.props.config };
+        this.temporary = { ...this.props.config };
+        Object.keys(this.temporary).forEach(key => this.temporary[key] = "");
     }
 
     OnInputChange(event) {
         this.setState({
             [event.target.name]: event.target.value
         });
+        this.temporary[event.target.name] = event.target.value;
     }
 
     OnClick() {
-        this.props.ConfigUpdate(this.state);
+        this.props.SnakeSet({
+            width:    parseInt(this.state.width),
+            height:   parseInt(this.state.height),
+            length:   parseInt(this.state.length),
+            food:     parseInt(this.state.food),
+            interval: parseInt(this.state.interval)
+        });
+        Object.keys(this.temporary).forEach(key => this.temporary[key] = "");
     }
 
-    InputBox(text, name, placeholder, styleText) {
+    InputBox(text, name, placeholder, style, value) {
         return (
             <InputGroup>
                 <InputGroupAddon addonType="prepend">
-                    <InputGroupText style={styleText} >
+                    <InputGroupText style={style} >
                         {text}
                     </InputGroupText>
                 </InputGroupAddon>
-                <Input name={name} placeholder={placeholder} onChange={this.OnInputChange.bind(this)} />
+                <Input autoComplete="off" value={value} name={name} placeholder={placeholder} onChange={this.OnInputChange.bind(this)} />
             </InputGroup>
         );
     }
 
     render() {
         return (
-            <div className="standard-box" style={Object.assign({}, styleTextBase, styleTextConfig)}>
+            <div className="standard-box" style={Object.assign({ position: "fixed", bottom: "0", left: "0"}, style.Text)}>
                 <h2 style={{ fontSize: "20px" }}>
                     <strong>
                         Game configuration
                     </strong>
                 </h2>
                 <br />
-                {this.InputBox("Board width", "width", this.props.config.size.x, { paddingRight: "22px" })}
-                {this.InputBox("Board height", "height", this.props.config.size.y, {})}
-                {this.InputBox("Snake length", "length", this.props.config.length, {})}
-                {this.InputBox("Maximum food", "food", this.props.config.food, {})}
-                {this.InputBox("Game speed", "interval", this.props.config.interval, { paddingRight: "32px" })}
-                <Button style={{ display: "inline-block" }} onClick={this.OnClick.bind(this)}>
+                {this.InputBox("Board width", "width", this.state.width, { paddingRight: "22px" }, this.temporary.width)}
+                {this.InputBox("Board height", "height", this.state.height, {}, this.temporary.height)}
+                {this.InputBox("Snake length", "length", this.state.length, {}, this.temporary.length)}
+                {this.InputBox("Maximum food", "food", this.state.food, {}, this.temporary.food)}
+                {this.InputBox("Game speed", "interval", this.state.interval, { paddingRight: "32px" }, this.temporary.interval)}
+                <br />
+                <Button style={{ display: "block" }} onClick={this.OnClick.bind(this)}>
                     Save and Restart
                 </Button>
             </div>
@@ -369,25 +360,25 @@ function RandomNumberGenerator(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function Vector2iToArrayIndex(position, size) {
-    return (position.y * size.x) + position.x;
+function Vector2iToArrayIndex(position, width) {
+    return (position.y * width) + position.x;
 }
 
-function OnBorder(position, size) {
+function OnBorder(position, width, height) {
     return (
         position.x === 0 ||
         position.y === 0 ||
-        position.x === size.x - 1 ||
-        position.y === size.y - 1
+        position.x === width - 1 ||
+        position.y === height - 1
     );
 }
 
-function BorderObstacles(size) {
+function BorderObstacles(width, height) {
     let obstacles = [];
-    for (let y = 0; y < size.y; y++) {
-        for (let x = 0; x < size.x; x++) {
+    for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
             const position = new Vector2i(x, y);
-            if (OnBorder(position, size)) {
+            if (OnBorder(position, width, height)) {
                 obstacles.push(position);
             }
         }
@@ -417,31 +408,25 @@ function ButtonFunction(text, func, style) {
 
 const reactStringReplace = require('react-string-replace');
 
-let styleTextBase = {
-    fontFamily: "'Courier New', Courier, monospace",
-    fontSize: "16px",
-    lineHeight: "normal",
-    textAlign: "left",
-    color: "black"
-}
-
-let styleTextConfig = {
-    position: "fixed",
-    bottom: "0",
-    left: "0"
-}
-
-let styleGameCharacters = {
-    display: "inline-block",
-    fontFamily: "'Courier New', Courier, monospace",
-    fontSize: "42px",
-    lineHeight: "70%",
-    whiteSpace: "pre-wrap",
-    color: "black"
-}
-
-let styleGameGraphicsArea = {
-    display: "inline-block",
-    position: "relative",
-    top: "30px"
+let style = {
+    Text: {
+        fontFamily: "'Courier New', Courier, monospace",
+        fontSize: "16px",
+        lineHeight: "normal",
+        textAlign: "left",
+        color: "black"
+    },
+    Characters: {
+        display: "inline-block",
+        fontFamily: "'Courier New', Courier, monospace",
+        fontSize: "42px",
+        lineHeight: "70%",
+        whiteSpace: "pre-wrap",
+        color: "black"
+    },
+    Graphics: {
+        display: "inline-block",
+        position: "relative",
+        top: "30px"
+    }
 }

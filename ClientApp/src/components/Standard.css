@@ -7,7 +7,7 @@
     padding: 24px;
 }
 
-.style-bar-side {
+.side-bar {
     height: 100%;
     width: 70px;
     position: fixed;
@@ -16,12 +16,12 @@
     background-color: rgba(250, 250, 250, 0);
 }
 
-.style-bar-left {
+.fade-bar-left {
     background: linear-gradient(90deg, rgba(150, 250, 250, 0.25), transparent);
     left: 0;
 }
 
-.style-bar-right {
+.fade-bar-right {
     background: linear-gradient(-90deg, rgba(150, 250, 250, 0.25), transparent);
     right: 0;
 }
