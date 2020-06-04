@@ -10,7 +10,7 @@ export class Dungeoncrawler extends Component {
         this.state = { output: [] };
         this.keyPressed = false;
         this.controller = "api/Dungeoncrawler";
-        this.id = "temp";
+        this.id = "";
         this.isMobile = window.innerWidth <= 800;
     }
     componentDidMount() {
@@ -18,7 +18,6 @@ export class Dungeoncrawler extends Component {
         document.onkeyup = this.OnKeyUp.bind(this);
         window.onbeforeunload = () => this.ProcessDelete();
         this.Reset();
-        console.log(window.innerWidth);
     }
     componentWillUnmount() {
         this.ProcessDelete();
@@ -30,7 +29,7 @@ export class Dungeoncrawler extends Component {
             </div>
         );
     }
-    URL() {
+    URI() {
         return this.controller + "/" + this.id;
     }
     OnKeyUp() {
@@ -39,9 +38,9 @@ export class Dungeoncrawler extends Component {
     OnKeyDown(event) {
         event = event || window.event;
 
-        if (!this.keyPressed) {
+        if (!this.keyPressed && this.id) {
             this.keyPressed = true;
-            fetch(this.URL(), {
+            fetch(this.URI(), {
                 method: 'PATCH',
                 headers: {
                     'Accept': 'application/json',
@@ -62,14 +61,12 @@ export class Dungeoncrawler extends Component {
         }
     }
     ProcessDelete() {
-        fetch(this.URL(), {
-            method: 'DELETE',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
+        console.log("DELETE");
+        fetch(this.URI(), {
+            method: 'DELETE'
         }).then(response => {
             if (!response.ok) {
+                console.log("DELETE failure");
                 throw Error(response.status + " " + response.statusText);
             }
         }).catch(error => {
@@ -79,27 +76,33 @@ export class Dungeoncrawler extends Component {
     }
     Reset() {
         this.setState({
-            output: <div className="box-static"><em>Loading, please wait</em></div> })
-        fetch(this.URL()).then(response => {
-            if (response.ok) {
-                this.ProcessDelete();
-            }
-            this.id = UUIDv4();
-            return fetch(this.controller, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(this.id)
-            });
+            output:
+                <div className="box-static">
+                    <em>
+                        Loading, please wait
+                    </em>
+                </div>
+        });
+
+        if (this.id) {
+            this.ProcessDelete();
+        }
+
+        fetch(this.controller, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this.id)
         }).then(response => {
             if (!response.ok) {
                 throw Error(response.status + " " + response.statusText);
             }
             return response.json();
-        }).then(data => {
-            this.setState({ output: this.TranformOutput(data) });
+        }).then(body => {
+            this.setState({ output: this.TranformOutput(body.output) });
+            this.id = body.id;
         }).catch(error => {
             this.setState({ output: this.ErrorOutput(error) });
             console.log(error.message);
@@ -160,12 +163,6 @@ export class Dungeoncrawler extends Component {
             </div>
         );
     }
-}
-
-function UUIDv4() {
-    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
-        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-    );
 }
 
 const styles = {

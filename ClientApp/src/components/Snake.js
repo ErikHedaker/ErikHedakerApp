@@ -4,7 +4,6 @@ import './Styles.css';
 
 export class Snake extends Component {
     static displayName = Snake.name;
-
     constructor(props) {
         super(props);
         this.config = {
@@ -20,6 +19,9 @@ export class Snake extends Component {
     }
     componentDidMount() {
         document.onkeydown = this.KeyPress.bind(this);
+    }
+    componentWillUnmount() {
+        clearInterval(this.intervalID);
     }
     render() {
         return (
@@ -98,17 +100,8 @@ export class Snake extends Component {
         }
     }
     MovementPanel() {
-        const stylesBox = {
-            Desktop: {
-                padding: ""
-            },
-            Mobile: {
-                padding: "4px"
-            }
-        };
-        const responsive = this.isMobile ? stylesBox.Mobile : stylesBox.Desktop;
         return (
-            <div className="box-static" style={{ ...styles.Text, textAlign: "center", margin: "1px", ...responsive }}>
+            <div className="box-responsive" style={{ ...styles.Text, textAlign: "center", margin: "1px" }}>
                 <h1 style={styles.Header}>
                     Movement
                 </h1>
@@ -122,17 +115,8 @@ export class Snake extends Component {
         );
     }
     ControlPanel() {
-        const stylesBox = {
-            Desktop: {
-                padding: ""
-            },
-            Mobile: {
-                padding: "4px"
-            }
-        };
-        const responsive = this.isMobile ? stylesBox.Mobile : stylesBox.Desktop;
         return (
-            <div className="box-static" style={{ ...styles.Text, textAlign: "center", margin: "1px", ...responsive }}>
+            <div className="box-responsive" style={{ ...styles.Text, textAlign: "center", margin: "1px" }}>
                 <h1 style={styles.Header}>
                     Controls
                 </h1>

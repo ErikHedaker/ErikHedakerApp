@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,18 +20,19 @@ namespace ErikHedakerApp.Controllers
         }
 
         [HttpPost]
-        public ActionResult<IEnumerable<string>> POST( [FromBody] string id )
+        public ActionResult<string> POST( )
         {
             Stopwatch stopwatch = Stopwatch.StartNew( );
+            string uuid = Utility.GetUniqueID( 16 );
 
-            if( _accessDPH.Exist( id ) )
+            if( _accessDPH.Exist( uuid ) )
             {
                 return Conflict( );
             }
 
-            _accessDPH.Add( id );
+            _accessDPH.Add( uuid );
 
-            while( !_accessDPH.Active( id ) )
+            while( !_accessDPH.Active( uuid ) )
             {
                 if( stopwatch.ElapsedMilliseconds > 5000 )
                 {
@@ -39,7 +42,7 @@ namespace ErikHedakerApp.Controllers
                 Thread.Sleep( 10 );
             }
 
-            return Ok( _accessDPH.Get( id ) );
+            return Ok( new { output = _accessDPH.Get( uuid ), id = uuid } );
         }
 
         [HttpDelete( "{id}" )]
@@ -96,5 +99,22 @@ namespace ErikHedakerApp
         protected ProcessUnresponsiveException(
           System.Runtime.Serialization.SerializationInfo info,
           System.Runtime.Serialization.StreamingContext context ) : base( info, context ) { }
+    }
+
+    public static class Utility
+    {
+        public static string GetUniqueID( int length )
+        {
+            StringBuilder builder = new StringBuilder( );
+            Enumerable
+                .Range( 65, 26 )
+                .Select( e => ( (char)e ).ToString( ) )
+                .Concat( Enumerable.Range( 97, 26 ).Select( e => ( (char)e ).ToString( ) ) )
+                .Concat( Enumerable.Range( 0, 10 ).Select( e => e.ToString( ) ) )
+                .OrderBy( e => Guid.NewGuid( ) )
+                .Take( length )
+                .ToList( ).ForEach( e => builder.Append( e ) );
+            return builder.ToString( );
+        }
     }
 }
