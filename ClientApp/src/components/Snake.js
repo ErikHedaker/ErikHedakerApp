@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, InputGroup, InputGroupAddon, InputGroupText, Input } from 'reactstrap';
-import './Standard.css';
+import './Styles.css';
 
 export class Snake extends Component {
     static displayName = Snake.name;
@@ -15,32 +15,33 @@ export class Snake extends Component {
             interval: 100
         };
         this.toggleDisplay = true;
+        this.isMobile = window.innerWidth <= 800;
         this.Restart();
     }
-
     componentDidMount() {
         document.onkeydown = this.KeyPress.bind(this);
     }
-
     render() {
         return (
-            <div style={{ textAlign: "center" }}>
-                {this.DisplayGame()}
-                <br />
-                <div>
-                    <div className="standard-box" style={style.Text}>
-                        Length: {this.player.body.length}
-                    </div>
+            <div>
+                <div style={{ textAlign: "center" }}>
+                    {this.DisplayGame()}
                 </div>
-                <div style={{ position: "fixed", left: "39%", bottom: "0" }}>
+                <div style={{ position: "fixed", bottom: "0", right: "0" }}>
                     {this.MovementPanel()}
+                    <br />
                     {this.ControlPanel()}
                 </div>
-                <ConfigurationFormInput config={this.config} SnakeSet={this.SnakeSet.bind(this)} />
+                <div style={{ ...styles.Text, position: "fixed", bottom: "0", left: "0" }}>
+                    <div className="box-responsive" style={{ ...styles.Text, marginBottom: "2px" }}>
+                        Current length: {this.player.body.length}
+                    </div>
+                    <br />
+                    <ConfigurationFormInput isMobile={this.isMobile} config={this.config} SnakeSet={this.SnakeSet.bind(this)} />
+                </div>
             </div>
         );
     }
-
     Restart() {
         clearInterval(this.intervalID);
         this.width = this.config.width;
@@ -53,12 +54,10 @@ export class Snake extends Component {
         this.directionPrev = this.direction;
         this.intervalID = setInterval(this.Update.bind(this), this.config.interval);
     }
-
     ToggleDisplay() {
         this.toggleDisplay = !this.toggleDisplay;
         this.forceUpdate();
     }
-
     KeyPress(event) {
         event = event || window.event;
         const key = String.fromCharCode(event.keyCode);
@@ -80,7 +79,6 @@ export class Snake extends Component {
                 break;
         }
     }
-
     Movement(key) {
         const opposite = {
             "north": "south",
@@ -99,39 +97,50 @@ export class Snake extends Component {
             this.direction = directions[key];
         }
     }
-
     MovementPanel() {
+        const stylesBox = {
+            Desktop: {
+                padding: ""
+            },
+            Mobile: {
+                padding: "4px"
+            }
+        };
+        const responsive = this.isMobile ? stylesBox.Mobile : stylesBox.Desktop;
         return (
-            <div className="standard-box" style={Object.assign({}, style.Text, { textAlign: "center", margin: "0px 2px" })}>
-                <h2 style={{ fontSize: "24px" }}>
-                    <strong>
-                        Movement
-                    </strong>
-                </h2>
+            <div className="box-static" style={{ ...styles.Text, textAlign: "center", margin: "1px", ...responsive }}>
+                <h1 style={styles.Header}>
+                    Movement
+                </h1>
                 <br />
-                {ButtonFunction("[W]", this.Movement.bind(this, "W"), { margin: "1px" })}
+                {ButtonFunction("[W]", this.Movement.bind(this, "W"), { ...styles.Button, margin: "1px" })}
                 <br />
-                {ButtonFunction("[A]", this.Movement.bind(this, "A"), { margin: "1px" })}
-                {ButtonFunction("[S]", this.Movement.bind(this, "S"), { margin: "1px" })}
-                {ButtonFunction("[D]", this.Movement.bind(this, "D"), { margin: "1px" })}
+                {ButtonFunction("[A]", this.Movement.bind(this, "A"), { ...styles.Button, margin: "1px" })}
+                {ButtonFunction("[S]", this.Movement.bind(this, "S"), { ...styles.Button, margin: "1px" })}
+                {ButtonFunction("[D]", this.Movement.bind(this, "D"), { ...styles.Button, margin: "1px" })}
             </div>
         );
     }
-
     ControlPanel() {
+        const stylesBox = {
+            Desktop: {
+                padding: ""
+            },
+            Mobile: {
+                padding: "4px"
+            }
+        };
+        const responsive = this.isMobile ? stylesBox.Mobile : stylesBox.Desktop;
         return (
-            <div className="standard-box" style={Object.assign({}, style.Text, { textAlign: "center", margin: "0px 2px" })}>
-                <h2 style={{ fontSize: "24px" }}>
-                    <strong>
-                        Controls
-                    </strong>
-                </h2>
-                <br />{ButtonFunction("[R]", this.Restart.bind(this),       { margin: "1px" })} Restart
-                <br />{ButtonFunction("[F]", this.ToggleDisplay.bind(this), { margin: "1px" })} Display
+            <div className="box-static" style={{ ...styles.Text, textAlign: "center", margin: "1px", ...responsive }}>
+                <h1 style={styles.Header}>
+                    Controls
+                </h1>
+                <br />{ButtonFunction("[R]", this.Restart.bind(this),       { ...styles.Button, margin: "1px" })} Restart
+                <br />{ButtonFunction("[F]", this.ToggleDisplay.bind(this), { ...styles.Button, margin: "1px" })} Display
             </div>
         );
     }
-
     Update() {
         this.player.Move(this.direction);
         this.directionPrev = this.direction;
@@ -151,7 +160,6 @@ export class Snake extends Component {
         }
         this.forceUpdate();
     }
-
     SnakeSet(config) {
         this.config.width    = Number.isInteger(config.width)    && config.width    > 0 ? config.width    : this.config.width;
         this.config.height   = Number.isInteger(config.height)   && config.height   > 0 ? config.height   : this.config.height;
@@ -160,10 +168,9 @@ export class Snake extends Component {
         this.config.interval = Number.isInteger(config.interval) && config.interval > 0 ? config.interval : this.config.interval;
         this.Restart();
     }
-
     AddRandomFood() {
         while (true) {
-            let random = new Vector2i(
+            const random = new Vector2i(
                 RandomNumberGenerator(1, this.width - 2),
                 RandomNumberGenerator(1, this.height - 2)
             );
@@ -175,7 +182,6 @@ export class Snake extends Component {
             }
         }
     }
-
     RenderCharacters() {
         const icon = {
             empty: '-',
@@ -203,17 +209,16 @@ export class Snake extends Component {
         output = reactStringReplace(output, new RegExp("(" + icon.snakeHeadTemp + ")", "g"), () => <span style={{ color: 'blue' }}>{icon.snake}</span>);
         return (
             <div>
-                <div className="standard-box" style={style.Characters}>
+                <div className="box-static" style={styles.Characters}>
                     {output}
                 </div>
             </div>
         );
     }
-
     RenderGraphics(sizeBlock, spacing) {
-        let DivBlocks = (positions, color) => {
+        const DivBlocks = (positions, color) => {
             return positions.map((position, index) => {
-                let styleBlock = {
+                const blocks = {
                     top: ((position.y / this.height) * 100) + "%",
                     left: ((position.x / this.width) * 100) + "%",
                     width: (sizeBlock - spacing) + "px",
@@ -221,16 +226,16 @@ export class Snake extends Component {
                     position: "absolute",
                     background: color
                 };
-                return <div key={index} style={styleBlock} />;
+                return <div key={index} style={blocks} />;
             })
         };
-        let areaPlayable = {
+        const board = {
             width: this.width * sizeBlock,
             height: this.height * sizeBlock
         }
         return (
             <div>
-                <div style={Object.assign({}, style.Graphics, areaPlayable)}>
+                <div style={{ ...styles.Graphics, ...board }}>
                     {DivBlocks(this.obstacles, "red")}
                     {DivBlocks(this.food, "green")}
                     {DivBlocks(this.player.body.slice(1), "skyblue")}
@@ -240,9 +245,71 @@ export class Snake extends Component {
             </div>
         );
     }
-
     DisplayGame() {
-        return this.toggleDisplay ? this.RenderGraphics(30, 1) : this.RenderCharacters();
+        const size = this.isMobile ? 20 : 30;
+        return this.toggleDisplay ? this.RenderGraphics(size, 1) : this.RenderCharacters();
+    }
+}
+
+class ConfigurationFormInput extends Component {
+    constructor(props) {
+        super(props);
+        this.state     = { ...this.props.config };
+        this.temporary = { ...this.props.config };
+        Object.keys(this.temporary).forEach(key => this.temporary[key] = "");
+    }
+    render() {
+        return (
+            <div className="box-responsive box-config-responsive" style={{ display: "flex", flexWrap: "wrap" }}>
+                <h2 className="header-responsive" style={{ width: "100%", textAlign: "center" }}>
+                    Game configuration
+                </h2>
+                <br />
+                {this.InputBox("Game width",   "width",    " input-responsive-pad-large")}
+                {this.InputBox("Game height",  "height",   " input-responsive-pad-small")}
+                {this.InputBox("Food amount",  "food",     " input-responsive-pad-small")}
+                {this.InputBox("Start length", "length",   "")}
+                {this.InputBox("Update speed", "interval", "")}
+                <br />
+                <Button className="button-default input-responsive" style={{ flex: "1", padding: "0px" }} onClick={this.OnClick.bind(this)}>
+                    Save and Restart
+                </Button>
+            </div>
+        );
+    }
+    InputBox(text, key, classname) {
+        return (
+            <InputGroup>
+                <InputGroupAddon className="input-responsive" addonType="prepend">
+                    <InputGroupText className={"input-responsive" + classname}>
+                        {text}
+                    </InputGroupText>
+                </InputGroupAddon>
+                <Input
+                    className="input-responsive"
+                    name={key}
+                    value={this.temporary[key]}
+                    placeholder={this.state[key]}
+                    onChange={this.OnInputChange.bind(this)}
+                    autoComplete="off" />
+            </InputGroup>
+        );
+    }
+    OnInputChange(event) {
+        this.setState({
+            [event.target.name]: event.target.value
+        });
+        this.temporary[event.target.name] = event.target.value;
+    }
+    OnClick() {
+        this.props.SnakeSet({
+            width:    parseInt(this.state.width),
+            height:   parseInt(this.state.height),
+            length:   parseInt(this.state.length),
+            food:     parseInt(this.state.food),
+            interval: parseInt(this.state.interval)
+        });
+        Object.keys(this.temporary).forEach(key => this.temporary[key] = "");
     }
 }
 
@@ -250,15 +317,12 @@ class Player {
     constructor(start, length) {
         this.body = new Array(length).fill(start);
     }
-
     Head() {
         return this.body[0];
     }
-
     Grow() {
         this.body.push(this.body[this.body.length - 1]);
     }
-
     Move(direction) {
         const movement =
         {
@@ -271,68 +335,6 @@ class Player {
             this.body[i] = { ...this.body[i - 1] };
         }
         this.Head().Add(movement[direction]);
-    }
-}
-
-class ConfigurationFormInput extends Component {
-    constructor(props) {
-        super(props);
-        this.state     = { ...this.props.config };
-        this.temporary = { ...this.props.config };
-        Object.keys(this.temporary).forEach(key => this.temporary[key] = "");
-    }
-
-    OnInputChange(event) {
-        this.setState({
-            [event.target.name]: event.target.value
-        });
-        this.temporary[event.target.name] = event.target.value;
-    }
-
-    OnClick() {
-        this.props.SnakeSet({
-            width:    parseInt(this.state.width),
-            height:   parseInt(this.state.height),
-            length:   parseInt(this.state.length),
-            food:     parseInt(this.state.food),
-            interval: parseInt(this.state.interval)
-        });
-        Object.keys(this.temporary).forEach(key => this.temporary[key] = "");
-    }
-
-    InputBox(text, name, placeholder, style, value) {
-        return (
-            <InputGroup>
-                <InputGroupAddon addonType="prepend">
-                    <InputGroupText style={style} >
-                        {text}
-                    </InputGroupText>
-                </InputGroupAddon>
-                <Input autoComplete="off" value={value} name={name} placeholder={placeholder} onChange={this.OnInputChange.bind(this)} />
-            </InputGroup>
-        );
-    }
-
-    render() {
-        return (
-            <div className="standard-box" style={Object.assign({ position: "fixed", bottom: "0", left: "0"}, style.Text)}>
-                <h2 style={{ fontSize: "20px" }}>
-                    <strong>
-                        Game configuration
-                    </strong>
-                </h2>
-                <br />
-                {this.InputBox("Board width", "width", this.state.width, { paddingRight: "22px" }, this.temporary.width)}
-                {this.InputBox("Board height", "height", this.state.height, {}, this.temporary.height)}
-                {this.InputBox("Snake length", "length", this.state.length, {}, this.temporary.length)}
-                {this.InputBox("Maximum food", "food", this.state.food, {}, this.temporary.food)}
-                {this.InputBox("Game speed", "interval", this.state.interval, { paddingRight: "32px" }, this.temporary.interval)}
-                <br />
-                <Button style={{ display: "block" }} onClick={this.OnClick.bind(this)}>
-                    Save and Restart
-                </Button>
-            </div>
-        );
     }
 }
 
@@ -359,11 +361,9 @@ class Vector2i {
 function RandomNumberGenerator(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-
 function Vector2iToArrayIndex(position, width) {
     return (position.y * width) + position.x;
 }
-
 function OnBorder(position, width, height) {
     return (
         position.x === 0 ||
@@ -372,7 +372,6 @@ function OnBorder(position, width, height) {
         position.y === height - 1
     );
 }
-
 function BorderObstacles(width, height) {
     let obstacles = [];
     for (let y = 0; y < height; y++) {
@@ -385,7 +384,6 @@ function BorderObstacles(width, height) {
     }
     return obstacles;
 }
-
 function CollisionCheckArrayVector2i(first, second) {
     let collision = false;
     first.forEach(one => {
@@ -397,18 +395,15 @@ function CollisionCheckArrayVector2i(first, second) {
     });
     return collision;
 }
-
 function ButtonFunction(text, func, style) {
     return (
-        <Button onClick={func} style={style}>
+        <Button className="button-default" onClick={func} style={style}>
             {text}
         </Button>
     );
-};
+}
 
-const reactStringReplace = require('react-string-replace');
-
-let style = {
+const styles = {
     Text: {
         fontFamily: "'Courier New', Courier, monospace",
         fontSize: "16px",
@@ -428,5 +423,10 @@ let style = {
         display: "inline-block",
         position: "relative",
         top: "30px"
+    },
+    Button: {
+        color: "black",
+        backgroundColor: "slategray"
     }
-}
+};
+const reactStringReplace = require('react-string-replace');

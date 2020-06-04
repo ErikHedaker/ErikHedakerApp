@@ -1,6 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { Button } from 'reactstrap';
-import './Standard.css';
+import './Styles.css';
 
 export class Dungeoncrawler extends Component {
     static displayName = Dungeoncrawler.name;
@@ -11,12 +11,14 @@ export class Dungeoncrawler extends Component {
         this.keyPressed = false;
         this.controller = "api/Dungeoncrawler";
         this.id = "temp";
+        this.isMobile = window.innerWidth <= 800;
     }
     componentDidMount() {
         document.onkeydown = this.OnKeyDown.bind(this);
         document.onkeyup = this.OnKeyUp.bind(this);
         window.onbeforeunload = () => this.ProcessDelete();
         this.Reset();
+        console.log(window.innerWidth);
     }
     componentWillUnmount() {
         this.ProcessDelete();
@@ -77,7 +79,7 @@ export class Dungeoncrawler extends Component {
     }
     Reset() {
         this.setState({
-            output: <div className="standard-box"><em>Loading, please wait</em></div> })
+            output: <div className="box-static"><em>Loading, please wait</em></div> })
         fetch(this.URL()).then(response => {
             if (response.ok) {
                 this.ProcessDelete();
@@ -105,7 +107,7 @@ export class Dungeoncrawler extends Component {
     }
     ButtonReset() {
         return (
-            <div className="standard-box">
+            <div className="box-static">
                 <Button variant="primary" onClick={this.Reset.bind(this)}>
                     Start new process on server
                 </Button>
@@ -113,7 +115,7 @@ export class Dungeoncrawler extends Component {
         );
     }
     TranformOutput(data) {
-        let OutputLines = lines => {
+        const OutputLines = lines => {
             return lines.map((line, index) => {
                 return (
                     <p key={index}>
@@ -122,16 +124,17 @@ export class Dungeoncrawler extends Component {
                 );
             });
         };
+        const responsive = { fontSize: this.isMobile ? "12px" : styles.Output.fontSize };
 
         return (
-            <div style={styleOutput}>
+            <div style={{ ...styles.Output, responsive }}>
                 {OutputLines(data)}
             </div>
         );
     }
     ErrorOutput(error) {
-        let Explaination = message => {
-            let code = message.substr(0, 3);
+        const Explaination = message => {
+            const code = message.substr(0, 3);
             if (code === "404") return "The server killed the Dungeoncrawler process after being idle for 60 seconds";
             if (code === "500") return "The server encountered an unexpected error and was unable to handle it";
             return "The server has responded with an http error code (4xx and 5xx)";
@@ -139,7 +142,7 @@ export class Dungeoncrawler extends Component {
 
         return (
             <div>
-                <div className="standard-box">
+                <div className="box-static">
                     <h5>
                         HTTP Error
                     </h5>
@@ -149,7 +152,7 @@ export class Dungeoncrawler extends Component {
                     </em>
                 </div>
                 <br /><br /><br />
-                <div className="standard-box">
+                <div className="box-static">
                     {Explaination(error.message)}
                 </div>
                 <br /><br /><br />
@@ -165,16 +168,18 @@ function UUIDv4() {
     );
 }
 
-let styleOutput = {
-    display: "inline-block",
-    background: "black",
-    border: "3px solid black",
-    borderRadius: "10px",
-    padding: "20px 12px 2px",
-    fontFamily: "'Courier New', Courier, monospace",
-    fontSize: "22px",
-    lineHeight: "40%",
-    textAlign: "left",
-    whiteSpace: "pre-wrap",
-    color: "white"
+const styles = {
+    Output: {
+        display: "inline-block",
+        background: "black",
+        border: "3px solid black",
+        borderRadius: "10px",
+        padding: "20px 12px 2px",
+        fontFamily: "'Courier New', Courier, monospace",
+        fontSize: "22px",
+        lineHeight: "40%",
+        textAlign: "left",
+        whiteSpace: "pre-wrap",
+        color: "white"
+    }
 }

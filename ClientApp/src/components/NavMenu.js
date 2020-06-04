@@ -1,10 +1,10 @@
 import React from 'react';
 import { Container, Navbar, NavbarBrand, NavItem, NavLink, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import './Standard.css';
+import './Styles.css';
 
 export function NavMenu(props) {
-    let DropdownThing = (route, name) => {
+    const DropdownThing = (route, name) => {
         return (
             <DropdownItem>
                 <NavLink tag={Link} to={route} className="text-dark">
@@ -16,26 +16,26 @@ export function NavMenu(props) {
 
     return (
         <header>
-            <Navbar style={style.BarGradient} className="navbar-expand-sm mb-3" light>
+            <Navbar style={styles.BarGradient} className="navbar-expand-sm mb-3" light>
                 <Container>
-                    <NavbarBrand tag={Link} to="/" className="hover-background" style={Object.assign({ padding: "2px 12px 6px" }, style.Border)}>
+                    <NavbarBrand tag={Link} to="/" className="hover-background" style={{ ...styles.Border, padding: "3px 12px 7px" }}>
                         Erik Hedåker
                     </NavbarBrand>
                     <ul className="navbar-nav flex-grow">
                         <UncontrolledDropdown>
-                            <DropdownToggle className="text-dark hover-background" style={style.Border} nav caret>
+                            <DropdownToggle className="text-dark hover-background" style={styles.Border} nav caret>
                                 <strong>
                                     {text.Projects[props.language]}
                                 </strong>
                             </DropdownToggle>
-                            <DropdownMenu style={style.Border}>
+                            <DropdownMenu style={styles.Border} right>
                                 {DropdownThing("/Overview", text.Overview[props.language])}
                                 <DropdownItem divider />
                                 {DropdownThing("/Dungeoncrawler", "Dungeoncrawler")}
                                 {DropdownThing("/Snake", "Snake")}
                             </DropdownMenu>
                         </UncontrolledDropdown>
-                        <NavItem style={Object.assign({ marginLeft: "40px" }, style.Border)}>
+                        <NavItem style={{ ...styles.Border, marginLeft: "40px" }}>
                             <NavLink tag={Link} to="/AboutMe" className="text-dark hover-background">
                                 <strong>
                                     {text.AboutMe[props.language]}
@@ -64,13 +64,13 @@ const text = {
     }
 };
 
-const style = {
+const styles = {
     Border: {
         border: "3px solid slategray",
         borderRadius: "10px"
     },
     BarGradient: {
-        background: "linear-gradient(rgba(150, 250, 250, 0.4), transparent)",
+        background: "linear-gradient(rgba(150, 250, 250, 0.3), transparent)",
         backgroundColor: "#FAFAFA"
     }
 };

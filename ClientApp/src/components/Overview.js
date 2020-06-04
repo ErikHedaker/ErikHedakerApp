@@ -1,11 +1,11 @@
 ﻿import React from 'react';
 import { Link } from 'react-router-dom';
-import './Standard.css';
+import './Styles.css';
 
 export function Overview(props) {
-    let Project = (route, name, body) => {
+    const Project = (route, name, body) => {
         return (
-            <div className="standard-box">
+            <div className="box-static">
                 <Link tag={Link} to={route} className="text-dark">
                     <span style={{ display: "block" }}>
                         <h5>

@@ -1,0 +1,117 @@
+﻿.side-bar {
+    height: 100%;
+    width: 62px;
+    position: fixed;
+    top: 0;
+    overflow-x: hidden;
+    background-color: rgba(250, 250, 250, 0);
+}
+
+.gradient-left {
+    background: linear-gradient(90deg, rgba(150, 250, 250, 0.25), transparent);
+    left: 0;
+}
+
+.gradient-right {
+    background: linear-gradient(-90deg, rgba(150, 250, 250, 0.25), transparent);
+    right: 0;
+}
+
+.hover-background:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.button-default {
+    background-color: slategray;
+    color: black;
+    font-weight: bold;
+}
+
+.box-static {
+    display: inline-block;
+    text-align: left;
+    background: white;
+    border: 3px solid lightgrey;
+    border-radius: 10px;
+    padding: 24px;
+}
+
+.box-responsive {
+    display: inline-block;
+    text-align: left;
+    background: white;
+    border: 3px solid lightgrey;
+    border-radius: 10px;
+    padding: 24px;
+}
+
+@media only screen and (max-width: 800px) {
+    .box-responsive {
+        padding: 4px;
+    }
+}
+
+.header-static {
+    font-size: 22px;
+    font-weight: bold;
+    padding: 0px;
+    margin: 0px 0px 16px;
+}
+
+.header-responsive {
+    font-size: 22px;
+    font-weight: bold;
+    padding: 0px;
+    margin: 0px 0px 16px;
+}
+
+@media only screen and (max-width: 800px) {
+    .header-responsive {
+        font-size: 16px;
+        font-weight: bold;
+        padding: 0px;
+        margin: 0px 0px 2px;
+    }
+}
+
+.input-responsive-pad-small {
+    padding-right: 22px;
+}
+
+@media only screen and (max-width: 800px) {
+    .input-responsive-pad-small {
+        padding-right: 19px;
+    }
+}
+
+.input-responsive-pad-large {
+    padding-right: 32px;
+}
+
+@media only screen and (max-width: 800px) {
+    .input-responsive-pad-large {
+        padding-right: 26px;
+    }
+}
+
+.input-responsive {
+    font-size: 16px;
+    height: 30px;
+}
+
+@media only screen and (max-width: 800px) {
+    .input-responsive {
+        font-size: 12px;
+        height: 20px;
+    }
+}
+
+.box-config-responsive {
+    width: 300px;
+}
+
+@media only screen and (max-width: 800px) {
+    .box-config-responsive {
+        width: 200px;
+    }
+}

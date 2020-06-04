@@ -1,9 +1,9 @@
 import React from 'react';
-import './Standard.css';
+import './Styles.css';
 
 export function AboutMe(props) {
     return (
-        <div className="standard-box">
+        <div className="box-static">
             <h5>
                 {text.Title[props.language]}
             </h5>

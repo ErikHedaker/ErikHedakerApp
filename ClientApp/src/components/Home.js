@@ -1,9 +1,9 @@
 import React from 'react';
-import './Standard.css';
+import './Styles.css';
 
 export function Home(props) {
     return (
-        <div className="standard-box" style={{ display: "block" }}>
+        <div className="box-static" style={{ display: "block" }}>
             <h5>
                 {text.Title[props.language]}
             </h5>
@@ -25,8 +25,8 @@ const text = {
         "sv": "Välkommen!"
     },
     Info: {
-        "en": "This website is a ASP.NET Core 3.1 Web App, deployed in a Docker container, with React.js as frontend, hosted with Nginx reverse proxy on a DigitalOcean VPS with Ubuntu 18.04",
-        "sv": "Denna hemsidan är en ASP.NET Core 3.1 Web App, körd i en Docker container, med React.js som frontend, hostad med Nginx reverse proxy på en DigitalOcean VPS med Ubuntu 18.04"
+        "en": "This website is a ASP.NET Core 3.1 Web App, deployed in a Docker container, with React.js as frontend, hosted with Nginx as reverse proxy on a DigitalOcean VPS with Ubuntu 18.04",
+        "sv": "Denna hemsidan är en ASP.NET Core 3.1 Web App, körd i en Docker container, med React.js som frontend, hostad med Nginx som reverse proxy på en DigitalOcean VPS med Ubuntu 18.04"
     },
     Body: {
         A: {
