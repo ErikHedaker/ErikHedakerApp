@@ -16,26 +16,26 @@ export function NavMenu(props) {
 
     return (
         <header>
-            <Navbar style={styles.BarGradient} className="navbar-expand-sm mb-3" light>
+            <Navbar className="gradient-top navbar-expand-sm mb-3" light>
                 <Container>
-                    <NavbarBrand tag={Link} to="/" className="hover-background" style={{ ...styles.Border, padding: "3px 12px 7px" }}>
+                    <NavbarBrand tag={Link} to="/" className="border-navbar-item hover-background" style={{ padding: "3px 12px 7px" }}>
                         Erik Hedåker
                     </NavbarBrand>
                     <ul className="navbar-nav flex-grow">
                         <UncontrolledDropdown>
-                            <DropdownToggle className="text-dark hover-background" style={styles.Border} nav caret>
+                            <DropdownToggle className="border-navbar-item hover-background text-dark" nav caret>
                                 <strong>
                                     {text.Projects[props.language]}
                                 </strong>
                             </DropdownToggle>
-                            <DropdownMenu style={styles.Border} right>
+                            <DropdownMenu className="border-navbar-item" right>
                                 {DropdownThing("/Overview", text.Overview[props.language])}
                                 <DropdownItem divider />
                                 {DropdownThing("/Dungeoncrawler", "Dungeoncrawler")}
                                 {DropdownThing("/Snake", "Snake")}
                             </DropdownMenu>
                         </UncontrolledDropdown>
-                        <NavItem style={{ ...styles.Border, marginLeft: "40px" }}>
+                        <NavItem className="border-navbar-item" style={{ marginLeft: "40px" }}>
                             <NavLink tag={Link} to="/AboutMe" className="text-dark hover-background">
                                 <strong>
                                     {text.AboutMe[props.language]}
@@ -61,16 +61,5 @@ const text = {
     Projects: {
         "en": "Projects",
         "sv": "Projekt"
-    }
-};
-
-const styles = {
-    Border: {
-        border: "3px solid slategray",
-        borderRadius: "10px"
-    },
-    BarGradient: {
-        background: "linear-gradient(rgba(150, 250, 250, 0.3), transparent)",
-        backgroundColor: "#FAFAFA"
     }
 };

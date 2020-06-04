@@ -34,8 +34,8 @@ export class Snake extends Component {
                     <br />
                     {this.ControlPanel()}
                 </div>
-                <div style={{ ...styles.Text, position: "fixed", bottom: "0", left: "0" }}>
-                    <div className="box-responsive" style={{ ...styles.Text, marginBottom: "2px" }}>
+                <div className="monospace-text" style={{ position: "fixed", bottom: "0", left: "0" }}>
+                    <div className="box-responsive monospace-text" style={{ marginBottom: "2px" }}>
                         Current length: {this.player.body.length}
                     </div>
                     <br />
@@ -101,27 +101,27 @@ export class Snake extends Component {
     }
     MovementPanel() {
         return (
-            <div className="box-responsive" style={{ ...styles.Text, textAlign: "center", margin: "1px" }}>
-                <h1 style={styles.Header}>
+            <div className="box-responsive monospace-text" style={{ textAlign: "center", margin: "1px" }}>
+                <h1 className="header-responsive">
                     Movement
                 </h1>
                 <br />
-                {ButtonFunction("[W]", this.Movement.bind(this, "W"), { ...styles.Button, margin: "1px" })}
+                {ButtonFunction("[W]", this.Movement.bind(this, "W"), { margin: "1px" })}
                 <br />
-                {ButtonFunction("[A]", this.Movement.bind(this, "A"), { ...styles.Button, margin: "1px" })}
-                {ButtonFunction("[S]", this.Movement.bind(this, "S"), { ...styles.Button, margin: "1px" })}
-                {ButtonFunction("[D]", this.Movement.bind(this, "D"), { ...styles.Button, margin: "1px" })}
+                {ButtonFunction("[A]", this.Movement.bind(this, "A"), { margin: "1px" })}
+                {ButtonFunction("[S]", this.Movement.bind(this, "S"), { margin: "1px" })}
+                {ButtonFunction("[D]", this.Movement.bind(this, "D"), { margin: "1px" })}
             </div>
         );
     }
     ControlPanel() {
         return (
-            <div className="box-responsive" style={{ ...styles.Text, textAlign: "center", margin: "1px" }}>
-                <h1 style={styles.Header}>
+            <div className="box-responsive monospace-text" style={{ textAlign: "center", margin: "1px" }}>
+                <h1 className="header-responsive">
                     Controls
                 </h1>
-                <br />{ButtonFunction("[R]", this.Restart.bind(this),       { ...styles.Button, margin: "1px" })} Restart
-                <br />{ButtonFunction("[F]", this.ToggleDisplay.bind(this), { ...styles.Button, margin: "1px" })} Display
+                <br />{ButtonFunction("[R]", this.Restart.bind(this),       { margin: "1px" })} Restart
+                <br />{ButtonFunction("[F]", this.ToggleDisplay.bind(this), { margin: "1px" })} Display
             </div>
         );
     }
@@ -193,7 +193,7 @@ export class Snake extends Component {
         output = reactStringReplace(output, new RegExp("(" + icon.snakeHeadTemp + ")", "g"), () => <span style={{ color: 'blue' }}>{icon.snake}</span>);
         return (
             <div>
-                <div className="box-static" style={styles.Characters}>
+                <div className="box-static snake-characters-responsive">
                     {output}
                 </div>
             </div>
@@ -219,7 +219,7 @@ export class Snake extends Component {
         }
         return (
             <div>
-                <div style={{ ...styles.Graphics, ...board }}>
+                <div className="snake-graphics-responsive" style={{ ...board }}>
                     {DivBlocks(this.obstacles, "red")}
                     {DivBlocks(this.food, "green")}
                     {DivBlocks(this.player.body.slice(1), "skyblue")}
@@ -386,31 +386,4 @@ function ButtonFunction(text, func, style) {
         </Button>
     );
 }
-
-const styles = {
-    Text: {
-        fontFamily: "'Courier New', Courier, monospace",
-        fontSize: "16px",
-        lineHeight: "normal",
-        textAlign: "left",
-        color: "black"
-    },
-    Characters: {
-        display: "inline-block",
-        fontFamily: "'Courier New', Courier, monospace",
-        fontSize: "42px",
-        lineHeight: "70%",
-        whiteSpace: "pre-wrap",
-        color: "black"
-    },
-    Graphics: {
-        display: "inline-block",
-        position: "relative",
-        top: "30px"
-    },
-    Button: {
-        color: "black",
-        backgroundColor: "slategray"
-    }
-};
 const reactStringReplace = require('react-string-replace');

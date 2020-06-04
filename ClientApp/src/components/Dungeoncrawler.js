@@ -11,7 +11,6 @@ export class Dungeoncrawler extends Component {
         this.keyPressed = false;
         this.controller = "api/Dungeoncrawler";
         this.id = "";
-        this.isMobile = window.innerWidth <= 800;
     }
     componentDidMount() {
         document.onkeydown = this.OnKeyDown.bind(this);
@@ -61,12 +60,10 @@ export class Dungeoncrawler extends Component {
         }
     }
     ProcessDelete() {
-        console.log("DELETE");
         fetch(this.URI(), {
             method: 'DELETE'
         }).then(response => {
             if (!response.ok) {
-                console.log("DELETE failure");
                 throw Error(response.status + " " + response.statusText);
             }
         }).catch(error => {
@@ -127,10 +124,9 @@ export class Dungeoncrawler extends Component {
                 );
             });
         };
-        const responsive = { fontSize: this.isMobile ? "12px" : styles.Output.fontSize };
 
         return (
-            <div style={{ ...styles.Output, responsive }}>
+            <div className="dungeoncrawler-output-responsive">
                 {OutputLines(data)}
             </div>
         );
@@ -162,21 +158,5 @@ export class Dungeoncrawler extends Component {
                 {this.ButtonReset()}
             </div>
         );
-    }
-}
-
-const styles = {
-    Output: {
-        display: "inline-block",
-        background: "black",
-        border: "3px solid black",
-        borderRadius: "10px",
-        padding: "20px 12px 2px",
-        fontFamily: "'Courier New', Courier, monospace",
-        fontSize: "22px",
-        lineHeight: "40%",
-        textAlign: "left",
-        whiteSpace: "pre-wrap",
-        color: "white"
     }
 }

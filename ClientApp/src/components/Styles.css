@@ -5,6 +5,7 @@
     top: 0;
     overflow-x: hidden;
     background-color: rgba(250, 250, 250, 0);
+    z-index: -1;
 }
 
 .gradient-left {
@@ -17,6 +18,16 @@
     right: 0;
 }
 
+.border-navbar-item {
+    border: 3px solid slategray;
+    border-radius: 10px;
+}
+
+.gradient-top {
+    background: linear-gradient(rgba(150, 250, 250, 0.3), transparent);
+    background-color: #FAFAFA;
+}
+
 .hover-background:hover {
     background-color: rgba(0, 0, 0, 0.1);
 }
@@ -25,6 +36,28 @@
     background-color: slategray;
     color: black;
     font-weight: bold;
+}
+
+.monospace-text {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 16px;
+    line-height: normal;
+    text-align: left;
+    color: black;
+}
+
+.header-static {
+    font-size: 22px;
+    font-weight: bold;
+    padding: 0px;
+    margin: 0px 0px 16px;
+}
+
+.header-responsive {
+    padding: 0px;
+    font-weight: bold;
+    font-size: 22px;
+    margin: 0px 0px 16px;
 }
 
 .box-static {
@@ -45,53 +78,12 @@
     padding: 24px;
 }
 
-@media only screen and (max-width: 800px) {
-    .box-responsive {
-        padding: 4px;
-    }
-}
-
-.header-static {
-    font-size: 22px;
-    font-weight: bold;
-    padding: 0px;
-    margin: 0px 0px 16px;
-}
-
-.header-responsive {
-    font-size: 22px;
-    font-weight: bold;
-    padding: 0px;
-    margin: 0px 0px 16px;
-}
-
-@media only screen and (max-width: 800px) {
-    .header-responsive {
-        font-size: 16px;
-        font-weight: bold;
-        padding: 0px;
-        margin: 0px 0px 2px;
-    }
-}
-
 .input-responsive-pad-small {
     padding-right: 22px;
 }
 
-@media only screen and (max-width: 800px) {
-    .input-responsive-pad-small {
-        padding-right: 19px;
-    }
-}
-
 .input-responsive-pad-large {
     padding-right: 32px;
-}
-
-@media only screen and (max-width: 800px) {
-    .input-responsive-pad-large {
-        padding-right: 26px;
-    }
 }
 
 .input-responsive {
@@ -99,19 +91,75 @@
     height: 30px;
 }
 
-@media only screen and (max-width: 800px) {
-    .input-responsive {
-        font-size: 12px;
-        height: 20px;
-    }
-}
-
 .box-config-responsive {
     width: 300px;
 }
 
+.snake-characters-responsive {
+    display: inline-block;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 42px;
+    line-height: 70%;
+    white-space: pre-wrap;
+    color: black;
+}
+
+.snake-graphics-responsive {
+    display: inline-block;
+    position: relative;
+    top: 30px;
+}
+
+.dungeoncrawler-output-responsive {
+    display: inline-block;
+    background: black;
+    border: 3px solid black;
+    border-radius: 10px;
+    padding: 20px 12px 2px;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 22px;
+    line-height: 40%;
+    text-align: left;
+    white-space: pre-wrap;
+    color: white;
+}
+
 @media only screen and (max-width: 800px) {
+    .box-responsive {
+        padding: 4px;
+    }
+
+    .header-responsive {
+        font-size: 16px;
+        margin: 0px 0px 2px;
+    }
+
+    .input-responsive-pad-small {
+        padding-right: 19px;
+    }
+
+    .input-responsive-pad-large {
+        padding-right: 26px;
+    }
+
+    .input-responsive {
+        font-size: 12px;
+        height: 20px;
+    }
+
     .box-config-responsive {
         width: 200px;
+    }
+
+    .snake-characters-responsive {
+        font-size: 28px;
+    }
+
+    .snake-graphics-responsive {
+        top: 20px;
+    }
+
+    .dungeoncrawler-output-responsive {
+        font-size: 12px;
     }
 }
