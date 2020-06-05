@@ -39,7 +39,7 @@ export class Snake extends Component {
                         Current length: {this.player.body.length}
                     </div>
                     <br />
-                    <ConfigurationFormInput isMobile={this.isMobile} config={this.config} SnakeSet={this.SnakeSet.bind(this)} />
+                    <ConfigurationFormInput config={this.config} SnakeSet={this.SnakeSet.bind(this)} />
                 </div>
             </div>
         );
@@ -102,20 +102,20 @@ export class Snake extends Component {
     MovementPanel() {
         return (
             <div className="box-responsive monospace-text" style={{ textAlign: "center", marginBottom: "2px" }}>
-                {ButtonFunction("[W]", this.Movement.bind(this, "W"), { margin: "1px" })}
+                {ButtonFunction("[W]", this.Movement.bind(this, "W"))}
                 <br />
-                {ButtonFunction("[A]", this.Movement.bind(this, "A"), { margin: "1px" })}
-                {ButtonFunction("[S]", this.Movement.bind(this, "S"), { margin: "1px" })}
-                {ButtonFunction("[D]", this.Movement.bind(this, "D"), { margin: "1px" })}
+                {ButtonFunction("[A]", this.Movement.bind(this, "A"))}
+                {ButtonFunction("[S]", this.Movement.bind(this, "S"))}
+                {ButtonFunction("[D]", this.Movement.bind(this, "D"))}
             </div>
         );
     }
     ControlPanel() {
         return (
             <div className="box-responsive monospace-text" style={{ width: "100%" }}>
-                {ButtonFunction("[R]", this.Restart.bind(this), { margin: "1px" })} Restart
+                {ButtonFunction("[R]", this.Restart.bind(this))} Restart
                 <br />
-                {ButtonFunction("[F]", this.ToggleDisplay.bind(this), { margin: "1px" })} Display
+                {ButtonFunction("[F]", this.ToggleDisplay.bind(this))} Display
             </div>
         );
     }

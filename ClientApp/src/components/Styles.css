@@ -35,6 +35,7 @@
     background-color: slategray;
     color: black;
     font-weight: bold;
+    margin: 1px;
 }
 
 .monospace-text {
@@ -129,6 +130,9 @@
     text-decoration: none;
 }
 
+.dungeoncrawler-input-responsive {
+}
+
 @media only screen and (max-width: 800px) {
     .box-responsive {
         padding: 4px;
@@ -136,7 +140,7 @@
 
     .header-responsive {
         font-size: 16px;
-        margin: 0px 0px 2px;
+        margin: 0px 0px 4px;
     }
 
     .input-responsive-pad-small {
@@ -161,10 +165,13 @@
     }
 
     .dungeoncrawler-output-responsive {
-        font-size: 12px;
+        font-size: 11px;
+        line-height: 8%;
     }
 
-    .nav-responsive {
-        margin-right: 70px;
+    .dungeoncrawler-input-responsive {
+        font-size: 12px;
+        height: 25px;
+        padding: 3px;
     }
 }

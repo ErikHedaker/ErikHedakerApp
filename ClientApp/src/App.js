@@ -30,14 +30,15 @@ export default class App extends Component {
             Swe: { backgroundColor: this.state.language === "sv" ? colors.On : colors.Off },
             Position: {
                 position: "fixed",
-                top: "0",
+                bottom: "0",
                 right: "0",
-                margin: "12px"
+                margin: "2px",
+                zIndex: "-1"
             }
         }
 
         return (
-            <ButtonGroup size="sm" style={styles.Position}>
+            <ButtonGroup style={styles.Position}>
                 <Button className="button-default" style={styles.Eng} onClick={this.LanguageSet.bind(this, "en")}>en</Button>
                 <Button className="button-default" style={styles.Swe} onClick={this.LanguageSet.bind(this, "sv")}>sv</Button>
             </ButtonGroup>

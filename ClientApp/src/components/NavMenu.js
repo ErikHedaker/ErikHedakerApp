@@ -16,13 +16,13 @@ export function NavMenu(props) {
 
     return (
         <Nav className="gradient-top">
-            <Container style={{ marginTop: "5px", marginBottom: "30px", display: "flex", flexDirection: "row", justifyContent: "flex-end" }}>
+            <Container style={{ marginTop: "12px", marginBottom: "24px", display: "flex", flexDirection: "row", justifyContent: "flex-end" }}>
                 <NavItem className="border-navbar-item hover-background" style={{ marginRight: "auto" }}>
                     <NavLink className="nav-item" tag={Link} to="/">
                         Erik Hedåker
                     </NavLink>
                 </NavItem>
-                <UncontrolledDropdown className="border-navbar-item hover-background text-dark">
+                <UncontrolledDropdown className="border-navbar-item hover-background text-dark" style={{ marginLeft: "2px" }}>
                     <DropdownToggle className="nav-item" nav caret>
                         {text.Projects[props.language]}
                     </DropdownToggle>
@@ -33,7 +33,7 @@ export function NavMenu(props) {
                         {DropdownThing("/Snake", "Snake")}
                     </DropdownMenu>
                 </UncontrolledDropdown>
-                <NavItem className="nav-item hover-background border-navbar-item nav-responsive" style={{ marginLeft: "2px" }}>
+                <NavItem className="nav-item hover-background border-navbar-item" style={{ marginLeft: "2px" }}>
                     <NavLink className="nav-item" tag={Link} to="/AboutMe">
                         {text.AboutMe[props.language]}
                     </NavLink>

@@ -1,16 +1,16 @@
 ﻿import React, { Component } from 'react';
-import { Button } from 'reactstrap';
+import { Button, InputGroup, InputGroupAddon, InputGroupText, Input } from 'reactstrap';
 import './Styles.css';
 
 export class Dungeoncrawler extends Component {
     static displayName = Dungeoncrawler.name;
-
     constructor(props) {
         super(props);
         this.state = { output: [] };
         this.keyPressed = false;
         this.controller = "api/Dungeoncrawler";
         this.id = "";
+        this.inputAllow = true;
     }
     componentDidMount() {
         document.onkeydown = this.OnKeyDown.bind(this);
@@ -25,6 +25,38 @@ export class Dungeoncrawler extends Component {
         return (
             <div style={{ textAlign: "center" }}>
                 {this.state.output}
+                <div className="monospace-text box-responsive" style={{ position: "absolute", bottom: "0", left: "0", display: "flex", justifyContent: "space-between", flexDirection: "row", width: "100%" }}>
+                    <div style={{ textAlign: "center", display: "table", marginTop: "auto" }}>
+                        {this.ButtonMobile("W")}
+                        <br />
+                        {this.ButtonMobile("A")}
+                        {this.ButtonMobile("S")}
+                        {this.ButtonMobile("D")}
+                    </div>
+                    <div style={{ marginTop: "auto" }}>
+                        <div style={{ textAlign: "center", marginBottom: "1px" }}>
+                            <InputManual
+                                InputAllow={this.InputAllow.bind(this)}
+                                InputBlock={this.InputBlock.bind(this)}
+                                ProcessUpdate={this.ProcessUpdate.bind(this)}
+                            />
+                        </div>
+                        <div style={{ textAlign: "center", width: "100%" }}>
+                            {this.ButtonMobile("1")}
+                            {this.ButtonMobile("2")}
+                            {this.ButtonMobile("3")}
+                            {this.ButtonMobile("4")}
+                            {this.ButtonMobile("5")}
+                        </div>
+                    </div>
+                    <div style={{ textAlign: "center", display: "table", marginTop: "auto" }}>
+                        {this.ButtonMobile("E")}
+                        <br />
+                        {this.ButtonMobile("F")}
+                        {this.ButtonMobile("G")}
+                        {this.ButtonMobile("H")}
+                    </div>
+                </div>
             </div>
         );
     }
@@ -37,27 +69,44 @@ export class Dungeoncrawler extends Component {
     OnKeyDown(event) {
         event = event || window.event;
 
-        if (!this.keyPressed && this.id) {
+        if (!this.keyPressed && this.id && this.inputAllow) {
             this.keyPressed = true;
-            fetch(this.URI(), {
-                method: 'PATCH',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(String.fromCharCode(event.keyCode))
-            }).then(response => {
-                if (!response.ok) {
-                    throw Error(response.status + " " + response.statusText);
-                }
-                return response.json();
-            }).then(data => {
-                this.setState({ output: this.TranformOutput(data) })
-            }).catch(error => {
-                this.setState({ output: this.ErrorOutput(error) });
-                console.log(error.message);
-            });
+            this.ProcessUpdate(String.fromCharCode(event.keyCode));
         }
+    }
+    InputAllow() {
+        this.inputAllow = true;
+    }
+    InputBlock() {
+        this.inputAllow = false;
+    }
+    ButtonMobile(key) {
+        return (
+            <Button className="button-default" onClick={this.ProcessUpdate.bind(this, key)} style={{ padding: "1px" }}>
+                [{key}]
+            </Button>
+        );
+    }
+    ProcessUpdate(value) {
+        let data = JSON.stringify(value);
+        fetch(this.URI(), {
+            method: 'PATCH',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: data
+        }).then(response => {
+            if (!response.ok) {
+                throw Error(response.status + " " + response.statusText);
+            }
+            return response.json();
+        }).then(data => {
+            this.setState({ output: this.TranformOutput(data) })
+        }).catch(error => {
+            this.setState({ output: this.ErrorOutput(error) });
+            console.log(error.message);
+        });
     }
     ProcessDelete() {
         fetch(this.URI(), {
@@ -66,6 +115,26 @@ export class Dungeoncrawler extends Component {
             if (!response.ok) {
                 throw Error(response.status + " " + response.statusText);
             }
+        }).catch(error => {
+            this.setState({ output: this.ErrorOutput(error) });
+            console.log(error.message);
+        });
+    }
+    ProcessStart() {
+        fetch(this.controller, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }).then(response => {
+            if (!response.ok) {
+                throw Error(response.status + " " + response.statusText);
+            }
+            return response.json();
+        }).then(body => {
+            this.setState({ output: this.TranformOutput(body.output) });
+            this.id = body.id;
         }).catch(error => {
             this.setState({ output: this.ErrorOutput(error) });
             console.log(error.message);
@@ -85,30 +154,12 @@ export class Dungeoncrawler extends Component {
             this.ProcessDelete();
         }
 
-        fetch(this.controller, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(this.id)
-        }).then(response => {
-            if (!response.ok) {
-                throw Error(response.status + " " + response.statusText);
-            }
-            return response.json();
-        }).then(body => {
-            this.setState({ output: this.TranformOutput(body.output) });
-            this.id = body.id;
-        }).catch(error => {
-            this.setState({ output: this.ErrorOutput(error) });
-            console.log(error.message);
-        });
+        this.ProcessStart();
     }
     ButtonReset() {
         return (
             <div className="box-static">
-                <Button variant="primary" onClick={this.Reset.bind(this)}>
+                <Button className="button-default" onClick={this.Reset.bind(this)}>
                     Start new process on server
                 </Button>
             </div>
@@ -158,5 +209,55 @@ export class Dungeoncrawler extends Component {
                 {this.ButtonReset()}
             </div>
         );
+    }
+}
+
+class InputManual extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            value: ""
+        };
+    }
+    render() {
+        return (
+            <div style={{ display: "inline-block", textAlign: "center" }}>
+                <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                        <InputGroupText className="dungeoncrawler-input-responsive">
+                            Manual input
+                        </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                        className="dungeoncrawler-input-responsive"
+                        onFocus={this.InputBlock.bind(this)}
+                        onBlur={this.InputAllow.bind(this)}
+                        onChange={this.HandleChange.bind(this)}
+                        value={this.state.value}
+                        autoComplete="off"
+                        style={{ width: "52px" }}
+                    />
+                    <InputGroupAddon addonType="append">
+                        <Button className="dungeoncrawler-input-responsive" onClick={this.HandleClick.bind(this)}>
+                            Send
+                        </Button>
+                    </InputGroupAddon>
+                </InputGroup>
+            </div>
+        );
+    }
+    InputAllow() {
+        this.props.InputAllow();
+    }
+    InputBlock() {
+        this.props.InputBlock();
+    }
+    HandleClick() {
+        this.props.InputAllow();
+        this.props.ProcessUpdate(this.state.value);
+        this.setState({ value: "" });
+    }
+    HandleChange(event) {
+        this.setState({ value: event.target.value });
     }
 }
