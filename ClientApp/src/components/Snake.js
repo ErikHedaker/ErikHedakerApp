@@ -35,7 +35,7 @@ export class Snake extends Component {
                     {this.ControlPanel()}
                 </div>
                 <div className="monospace-text" style={{ position: "fixed", bottom: "0", left: "0" }}>
-                    <div className="box-responsive monospace-text" style={{ marginBottom: "2px" }}>
+                    <div className="box-responsive monospace-text" style={{ marginBottom: "2px", width: "100%" }}>
                         Current length: {this.player.body.length}
                     </div>
                     <br />
@@ -101,11 +101,7 @@ export class Snake extends Component {
     }
     MovementPanel() {
         return (
-            <div className="box-responsive monospace-text" style={{ textAlign: "center", margin: "1px" }}>
-                <h1 className="header-responsive">
-                    Movement
-                </h1>
-                <br />
+            <div className="box-responsive monospace-text" style={{ textAlign: "center", marginBottom: "2px" }}>
                 {ButtonFunction("[W]", this.Movement.bind(this, "W"), { margin: "1px" })}
                 <br />
                 {ButtonFunction("[A]", this.Movement.bind(this, "A"), { margin: "1px" })}
@@ -116,12 +112,10 @@ export class Snake extends Component {
     }
     ControlPanel() {
         return (
-            <div className="box-responsive monospace-text" style={{ textAlign: "center", margin: "1px" }}>
-                <h1 className="header-responsive">
-                    Controls
-                </h1>
-                <br />{ButtonFunction("[R]", this.Restart.bind(this),       { margin: "1px" })} Restart
-                <br />{ButtonFunction("[F]", this.ToggleDisplay.bind(this), { margin: "1px" })} Display
+            <div className="box-responsive monospace-text" style={{ width: "100%" }}>
+                {ButtonFunction("[R]", this.Restart.bind(this), { margin: "1px" })} Restart
+                <br />
+                {ButtonFunction("[F]", this.ToggleDisplay.bind(this), { margin: "1px" })} Display
             </div>
         );
     }
@@ -219,7 +213,7 @@ export class Snake extends Component {
         }
         return (
             <div>
-                <div className="snake-graphics-responsive" style={{ ...board }}>
+                <div className="snake-graphics" style={board}>
                     {DivBlocks(this.obstacles, "red")}
                     {DivBlocks(this.food, "green")}
                     {DivBlocks(this.player.body.slice(1), "skyblue")}
@@ -327,13 +321,11 @@ class Vector2i {
         this.x = x;
         this.y = y;
     }
-
     Add(other) {
         this.x += other.x;
         this.y += other.y;
         return this;
     }
-
     Equal(other) {
         return (
             this.x === other.x &&

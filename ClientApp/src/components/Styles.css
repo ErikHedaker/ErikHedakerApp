@@ -25,7 +25,6 @@
 
 .gradient-top {
     background: linear-gradient(rgba(150, 250, 250, 0.3), transparent);
-    background-color: #FAFAFA;
 }
 
 .hover-background:hover {
@@ -104,7 +103,7 @@
     color: black;
 }
 
-.snake-graphics-responsive {
+.snake-graphics {
     display: inline-block;
     position: relative;
     top: 30px;
@@ -122,6 +121,12 @@
     text-align: left;
     white-space: pre-wrap;
     color: white;
+}
+
+.nav-item {
+    font-weight: bold;
+    color: black;
+    text-decoration: none;
 }
 
 @media only screen and (max-width: 800px) {
@@ -155,11 +160,11 @@
         font-size: 28px;
     }
 
-    .snake-graphics-responsive {
-        top: 20px;
-    }
-
     .dungeoncrawler-output-responsive {
         font-size: 12px;
+    }
+
+    .nav-responsive {
+        margin-right: 70px;
     }
 }

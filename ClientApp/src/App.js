@@ -16,10 +16,11 @@ export default class App extends Component {
         };
     }
 
+    LanguageSet( key ) {
+        this.setState({ language: key });
+    }
+
     ButtonToggleLanguage() {
-        let LanguageSet = key => {
-            this.setState({ language: key });
-        };
         const colors = {
             On: "deepskyblue",
             Off: "slategray"
@@ -31,25 +32,25 @@ export default class App extends Component {
                 position: "fixed",
                 top: "0",
                 right: "0",
-                margin: "16px"
+                margin: "12px"
             }
         }
 
         return (
             <ButtonGroup size="sm" style={styles.Position}>
-                <Button className="button-default" style={ styles.Eng } onClick={LanguageSet.bind(this, "en")}>en</Button>
-                <Button className="button-default" style={ styles.Swe } onClick={LanguageSet.bind(this, "sv")}>sv</Button>
+                <Button className="button-default" style={styles.Eng} onClick={this.LanguageSet.bind(this, "en")}>en</Button>
+                <Button className="button-default" style={styles.Swe} onClick={this.LanguageSet.bind(this, "sv")}>sv</Button>
             </ButtonGroup>
         );
-    }
+    };
 
     render() {
         return (
             <div>
                 <Layout language={this.state.language}>
-                    <Route exact path='/'         render={(props) => <Home {...props} language={this.state.language} />} />
-                    <Route path='/AboutMe'        render={(props) => <AboutMe {...props} language={this.state.language} />} />
-                    <Route path='/Overview'       render={(props) => <Overview {...props} language={this.state.language} />} />
+                    <Route exact path='/'         render={(props) => <Home           {...props} language={this.state.language} />} />
+                    <Route path='/AboutMe'        render={(props) => <AboutMe        {...props} language={this.state.language} />} />
+                    <Route path='/Overview'       render={(props) => <Overview       {...props} language={this.state.language} />} />
                     <Route path='/Dungeoncrawler' render={(props) => <Dungeoncrawler {...props} language={this.state.language} />} />
                     <Route path='/Snake'          render={(props) => <Snake          {...props} language={this.state.language} />} />
                 </Layout>

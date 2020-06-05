@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Navbar, NavbarBrand, NavItem, NavLink, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { Container, Nav, NavItem, NavLink, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import './Styles.css';
 
@@ -15,37 +15,31 @@ export function NavMenu(props) {
     };
 
     return (
-        <header>
-            <Navbar className="gradient-top navbar-expand-sm mb-3" light>
-                <Container>
-                    <NavbarBrand tag={Link} to="/" className="border-navbar-item hover-background" style={{ padding: "3px 12px 7px" }}>
+        <Nav className="gradient-top">
+            <Container style={{ marginTop: "5px", marginBottom: "30px", display: "flex", flexDirection: "row", justifyContent: "flex-end" }}>
+                <NavItem className="border-navbar-item hover-background" style={{ marginRight: "auto" }}>
+                    <NavLink className="nav-item" tag={Link} to="/">
                         Erik Hedåker
-                    </NavbarBrand>
-                    <ul className="navbar-nav flex-grow">
-                        <UncontrolledDropdown>
-                            <DropdownToggle className="border-navbar-item hover-background text-dark" nav caret>
-                                <strong>
-                                    {text.Projects[props.language]}
-                                </strong>
-                            </DropdownToggle>
-                            <DropdownMenu className="border-navbar-item" right>
-                                {DropdownThing("/Overview", text.Overview[props.language])}
-                                <DropdownItem divider />
-                                {DropdownThing("/Dungeoncrawler", "Dungeoncrawler")}
-                                {DropdownThing("/Snake", "Snake")}
-                            </DropdownMenu>
-                        </UncontrolledDropdown>
-                        <NavItem className="border-navbar-item" style={{ marginLeft: "40px" }}>
-                            <NavLink tag={Link} to="/AboutMe" className="text-dark hover-background">
-                                <strong>
-                                    {text.AboutMe[props.language]}
-                                </strong>
-                            </NavLink>
-                        </NavItem>
-                    </ul>
-                </Container>
-            </Navbar>
-        </header>
+                    </NavLink>
+                </NavItem>
+                <UncontrolledDropdown className="border-navbar-item hover-background text-dark">
+                    <DropdownToggle className="nav-item" nav caret>
+                        {text.Projects[props.language]}
+                    </DropdownToggle>
+                    <DropdownMenu className="border-navbar-item" style={{ margin: "5px 0px 0px -3px" }}>
+                        {DropdownThing("/Overview", text.Overview[props.language])}
+                        <DropdownItem divider />
+                        {DropdownThing("/Dungeoncrawler", "Dungeoncrawler")}
+                        {DropdownThing("/Snake", "Snake")}
+                    </DropdownMenu>
+                </UncontrolledDropdown>
+                <NavItem className="nav-item hover-background border-navbar-item nav-responsive" style={{ marginLeft: "2px" }}>
+                    <NavLink className="nav-item" tag={Link} to="/AboutMe">
+                        {text.AboutMe[props.language]}
+                    </NavLink>
+                </NavItem>
+            </Container>
+        </Nav>
     );
 }
 
