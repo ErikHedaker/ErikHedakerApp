@@ -25,36 +25,38 @@ export class Dungeoncrawler extends Component {
         return (
             <div style={{ textAlign: "center" }}>
                 {this.state.output}
-                <div className="monospace-text box-responsive" style={{ position: "absolute", bottom: "0", left: "0", display: "flex", justifyContent: "space-between", flexDirection: "row", width: "100%" }}>
-                    <div style={{ textAlign: "center", display: "table", marginTop: "auto" }}>
-                        {this.ButtonMobile("W")}
-                        <br />
-                        {this.ButtonMobile("A")}
-                        {this.ButtonMobile("S")}
-                        {this.ButtonMobile("D")}
-                    </div>
-                    <div style={{ marginTop: "auto" }}>
-                        <div style={{ textAlign: "center", marginBottom: "1px" }}>
-                            <InputManual
-                                InputAllow={this.InputAllow.bind(this)}
-                                InputBlock={this.InputBlock.bind(this)}
-                                ProcessUpdate={this.ProcessUpdate.bind(this)}
-                            />
+                <div style={{ position: "absolute", bottom: "0", left: "0", width: "100%", display: "flex", justifyContent: "center" }}>
+                    <div className="monospace-text box-responsive dungeoncrawler-controls" style={{ padding: "2px" }}>
+                        <div style={{ textAlign: "center", display: "table", marginTop: "auto" }}>
+                            {this.ButtonMobile("W")}
+                            <br />
+                            {this.ButtonMobile("A")}
+                            {this.ButtonMobile("S")}
+                            {this.ButtonMobile("D")}
                         </div>
-                        <div style={{ textAlign: "center", width: "100%" }}>
-                            {this.ButtonMobile("1")}
-                            {this.ButtonMobile("2")}
-                            {this.ButtonMobile("3")}
-                            {this.ButtonMobile("4")}
-                            {this.ButtonMobile("5")}
+                        <div style={{ marginTop: "auto" }}>
+                            <div style={{ textAlign: "center", marginBottom: "1px" }}>
+                                <InputManual
+                                    InputAllow={this.InputAllow.bind(this)}
+                                    InputBlock={this.InputBlock.bind(this)}
+                                    ProcessUpdate={this.ProcessUpdate.bind(this)}
+                                />
+                            </div>
+                            <div style={{ textAlign: "center", width: "100%" }}>
+                                {this.ButtonMobile("1")}
+                                {this.ButtonMobile("2")}
+                                {this.ButtonMobile("3")}
+                                {this.ButtonMobile("4")}
+                                {this.ButtonMobile("5")}
+                            </div>
                         </div>
-                    </div>
-                    <div style={{ textAlign: "center", display: "table", marginTop: "auto" }}>
-                        {this.ButtonMobile("E")}
-                        <br />
-                        {this.ButtonMobile("F")}
-                        {this.ButtonMobile("G")}
-                        {this.ButtonMobile("H")}
+                        <div style={{ textAlign: "center", display: "table", marginTop: "auto" }}>
+                            {this.ButtonMobile("E")}
+                            <br />
+                            {this.ButtonMobile("F")}
+                            {this.ButtonMobile("G")}
+                            {this.ButtonMobile("H")}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -221,29 +223,27 @@ class InputManual extends Component {
     }
     render() {
         return (
-            <div style={{ display: "inline-block", textAlign: "center" }}>
-                <InputGroup>
-                    <InputGroupAddon addonType="prepend">
-                        <InputGroupText className="dungeoncrawler-input-responsive">
-                            Manual input
-                        </InputGroupText>
-                    </InputGroupAddon>
-                    <Input
-                        className="dungeoncrawler-input-responsive"
-                        onFocus={this.InputBlock.bind(this)}
-                        onBlur={this.InputAllow.bind(this)}
-                        onChange={this.HandleChange.bind(this)}
-                        value={this.state.value}
-                        autoComplete="off"
-                        style={{ width: "52px" }}
-                    />
-                    <InputGroupAddon addonType="append">
-                        <Button className="dungeoncrawler-input-responsive" onClick={this.HandleClick.bind(this)}>
-                            Send
-                        </Button>
-                    </InputGroupAddon>
-                </InputGroup>
-            </div>
+            <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                    <InputGroupText className="dungeoncrawler-input">
+                        Manual input
+                    </InputGroupText>
+                </InputGroupAddon>
+                <Input
+                    className="dungeoncrawler-input"
+                    onFocus={this.InputBlock.bind(this)}
+                    onBlur={this.InputAllow.bind(this)}
+                    onChange={this.HandleChange.bind(this)}
+                    value={this.state.value}
+                    autoComplete="off"
+                    style={{ width: "0px" }}
+                />
+                <InputGroupAddon addonType="append">
+                    <Button className="dungeoncrawler-input" onClick={this.HandleClick.bind(this)}>
+                        Send
+                    </Button>
+                </InputGroupAddon>
+            </InputGroup>
         );
     }
     InputAllow() {

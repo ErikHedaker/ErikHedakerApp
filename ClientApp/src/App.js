@@ -32,15 +32,15 @@ export default class App extends Component {
                 position: "fixed",
                 bottom: "0",
                 right: "0",
-                margin: "2px",
-                zIndex: "-1"
+                marginRight: "2px",
+                marginBottom: "2px"
             }
         }
 
         return (
-            <ButtonGroup style={styles.Position}>
-                <Button className="button-default" style={styles.Eng} onClick={this.LanguageSet.bind(this, "en")}>en</Button>
-                <Button className="button-default" style={styles.Swe} onClick={this.LanguageSet.bind(this, "sv")}>sv</Button>
+            <ButtonGroup className="sm" style={styles.Position} vertical>
+                <Button className="sm button-default" style={styles.Eng} onClick={this.LanguageSet.bind(this, "en")}>en</Button>
+                <Button className="sm button-default" style={styles.Swe} onClick={this.LanguageSet.bind(this, "sv")}>sv</Button>
             </ButtonGroup>
         );
     };

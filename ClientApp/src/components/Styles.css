@@ -130,7 +130,16 @@
     text-decoration: none;
 }
 
-.dungeoncrawler-input-responsive {
+.dungeoncrawler-input {
+    font-size: 14px;
+    height: 32px;
+    padding: 3px;
+}
+
+.dungeoncrawler-controls {
+    display: flex;
+    justify-content: center;
+    z-index: 1;
 }
 
 @media only screen and (max-width: 800px) {
@@ -169,9 +178,8 @@
         line-height: 8%;
     }
 
-    .dungeoncrawler-input-responsive {
-        font-size: 12px;
-        height: 25px;
-        padding: 3px;
+    .dungeoncrawler-controls {
+        width: 100%;
     }
+
 }
