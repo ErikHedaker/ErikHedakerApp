@@ -70,7 +70,7 @@ namespace ErikHedakerApp.Controllers
 
             // Process needs time to fetch from input stream, calculate and write to output stream
             // TODO: Change to something that works logically
-            Thread.Sleep( 25 );
+            Thread.Sleep( 15 );
 
             return Ok( _accessDPH.Get( id ) );
         }

@@ -18,18 +18,11 @@
     right: 0;
 }
 
-.border-navbar-item {
-    border: 3px solid slategray;
-    border-radius: 10px;
-}
 
 .gradient-top {
     background: linear-gradient(rgba(150, 250, 250, 0.3), transparent);
 }
 
-.hover-background:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-}
 
 .button-default {
     background-color: slategray;
@@ -91,8 +84,25 @@
     height: 30px;
 }
 
-.box-config-responsive {
+.snake-current-length {
+    background: white;
+    border-width: 3px;
+    border-color: lightgrey;
+    border-radius: 0 10px 10px 0;
+    border-style: solid solid solid none;
+    padding: 5px;
+    margin-bottom: 2px;
+    width: 100%;
+}
+
+.snake-config {
     width: 300px;
+    background: white;
+    border-width: 3px;
+    border-color: lightgrey;
+    border-radius: 0 10px 0 0;
+    border-style: solid solid none none;
+    padding: 5px;
 }
 
 .snake-characters-responsive {
@@ -124,25 +134,76 @@
     color: white;
 }
 
-.nav-item {
-    font-weight: bold;
-    color: black;
-    text-decoration: none;
-}
-
-.dungeoncrawler-input {
-    font-size: 14px;
+.dungeoncrawler-manual-input {
+    font-size: 11px;
     height: 32px;
-    padding: 3px;
+    padding: 4px;
 }
 
 .dungeoncrawler-controls {
     display: flex;
     justify-content: center;
     z-index: 1;
+    background: white;
+    border-width: 3px;
+    border-color: lightgrey;
+    border-radius: 10px 10px 0 0;
+    border-style: solid solid none solid;
+    padding: 12px 12px 1px;
 }
 
-@media only screen and (max-width: 800px) {
+.dungeoncrawler-controls-button {
+    background-color: slategray;
+    color: black;
+    font-weight: bold;
+    margin: 1px;
+    padding: 3px 7px;
+}
+
+.snake-controls {
+    z-index: 1;
+    background: white;
+    border-width: 3px;
+    border-color: lightgrey;
+    border-radius: 10px 0 0 0;
+    border-style: solid none none solid;
+    padding: 1px;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    font-size: 14px;
+    font-family: "Courier New", Courier, monospace;
+    line-height: normal;
+    text-align: left;
+    color: black;
+}
+
+.snake-controls-button {
+    background-color: slategray;
+    color: black;
+    font-weight: bold;
+    margin: 1px;
+    padding: 6px 12px;
+}
+
+.navmenu-header {
+    font-size: 16px;
+    font-weight: bold;
+    color: black;
+    text-decoration: none;
+    padding: 8px;
+}
+
+.navmenu-border {
+    border: 3px solid slategray;
+    border-radius: 10px;
+}
+
+.navmenu-hover-background:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+@media only screen and (max-width: 750px) {
     .box-responsive {
         padding: 4px;
     }
@@ -165,21 +226,36 @@
         height: 20px;
     }
 
-    .box-config-responsive {
+    .snake-config {
         width: 200px;
     }
 
     .snake-characters-responsive {
-        font-size: 28px;
+        font-size: 22px;
     }
 
     .dungeoncrawler-output-responsive {
         font-size: 11px;
         line-height: 8%;
+        padding: 8px 1px;
     }
 
     .dungeoncrawler-controls {
         width: 100%;
+        border-radius: 0;
+        border-style: solid none none none;
+        padding: 1px;
+    }
+}
+
+@media only screen and (max-width: 350px) {
+    .dungeoncrawler-output-responsive {
+        font-size: 10px;
+        line-height: 8%;
+        padding: 8px 1px;
     }
 
+    .navmenu-header {
+        padding: 3px;
+    }
 }

@@ -22,17 +22,27 @@ export class Dungeoncrawler extends Component {
         this.ProcessDelete();
     }
     render() {
+        let ButtonMobile = (key) => {
+            return (
+                <Button className="dungeoncrawler-controls-button" onClick={this.ProcessUpdate.bind(this, key)}>
+                    {key}
+                </Button>
+            );
+        };
+
         return (
-            <div style={{ textAlign: "center" }}>
-                {this.state.output}
+            <div>
+                <div style={{ textAlign: "center" }}>
+                    {this.state.output}
+                </div>
                 <div style={{ position: "absolute", bottom: "0", left: "0", width: "100%", display: "flex", justifyContent: "center" }}>
-                    <div className="monospace-text box-responsive dungeoncrawler-controls" style={{ padding: "2px" }}>
+                    <div className="monospace-text dungeoncrawler-controls">
                         <div style={{ textAlign: "center", display: "table", marginTop: "auto" }}>
-                            {this.ButtonMobile("W")}
+                            {ButtonMobile("W")}
                             <br />
-                            {this.ButtonMobile("A")}
-                            {this.ButtonMobile("S")}
-                            {this.ButtonMobile("D")}
+                            {ButtonMobile("A")}
+                            {ButtonMobile("S")}
+                            {ButtonMobile("D")}
                         </div>
                         <div style={{ marginTop: "auto" }}>
                             <div style={{ textAlign: "center", marginBottom: "1px" }}>
@@ -43,19 +53,19 @@ export class Dungeoncrawler extends Component {
                                 />
                             </div>
                             <div style={{ textAlign: "center", width: "100%" }}>
-                                {this.ButtonMobile("1")}
-                                {this.ButtonMobile("2")}
-                                {this.ButtonMobile("3")}
-                                {this.ButtonMobile("4")}
-                                {this.ButtonMobile("5")}
+                                {ButtonMobile("1")}
+                                {ButtonMobile("2")}
+                                {ButtonMobile("3")}
+                                {ButtonMobile("4")}
+                                {ButtonMobile("5")}
                             </div>
                         </div>
                         <div style={{ textAlign: "center", display: "table", marginTop: "auto" }}>
-                            {this.ButtonMobile("E")}
+                            {ButtonMobile("E")}
                             <br />
-                            {this.ButtonMobile("F")}
-                            {this.ButtonMobile("G")}
-                            {this.ButtonMobile("H")}
+                            {ButtonMobile("F")}
+                            {ButtonMobile("G")}
+                            {ButtonMobile("H")}
                         </div>
                     </div>
                 </div>
@@ -81,13 +91,6 @@ export class Dungeoncrawler extends Component {
     }
     InputBlock() {
         this.inputAllow = false;
-    }
-    ButtonMobile(key) {
-        return (
-            <Button className="button-default" onClick={this.ProcessUpdate.bind(this, key)} style={{ padding: "1px" }}>
-                [{key}]
-            </Button>
-        );
     }
     ProcessUpdate(value) {
         let data = JSON.stringify(value);
@@ -225,32 +228,26 @@ class InputManual extends Component {
         return (
             <InputGroup>
                 <InputGroupAddon addonType="prepend">
-                    <InputGroupText className="dungeoncrawler-input">
-                        Manual input
+                    <InputGroupText className="dungeoncrawler-manual-input">
+                        Manual
                     </InputGroupText>
                 </InputGroupAddon>
                 <Input
-                    className="dungeoncrawler-input"
-                    onFocus={this.InputBlock.bind(this)}
-                    onBlur={this.InputAllow.bind(this)}
+                    className="dungeoncrawler-manual-input"
+                    onFocus={this.props.InputBlock.bind(this)}
+                    onBlur={this.props.InputAllow.bind(this)}
                     onChange={this.HandleChange.bind(this)}
                     value={this.state.value}
                     autoComplete="off"
                     style={{ width: "0px" }}
                 />
                 <InputGroupAddon addonType="append">
-                    <Button className="dungeoncrawler-input" onClick={this.HandleClick.bind(this)}>
-                        Send
+                    <Button className="dungeoncrawler-manual-input" onClick={this.HandleClick.bind(this)}>
+                        Input
                     </Button>
                 </InputGroupAddon>
             </InputGroup>
         );
-    }
-    InputAllow() {
-        this.props.InputAllow();
-    }
-    InputBlock() {
-        this.props.InputBlock();
     }
     HandleClick() {
         this.props.InputAllow();

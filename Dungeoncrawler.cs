@@ -41,7 +41,7 @@ namespace ErikHedakerApp
             inputStream = process.StandardInput;
             process.BeginOutputReadLine( );
         }
-        ~DungeoncrawlerProcess( )
+        public void Kill()
         {
             process.Kill( );
             process.WaitForExit( );
@@ -104,7 +104,7 @@ namespace ErikHedakerApp
 
             foreach( var id in removes )
             {
-                _processes.Remove( id );
+                Remove( id );
                 Console.WriteLine( "IDLE KILL: " + id );
             }
         }
@@ -122,6 +122,7 @@ namespace ErikHedakerApp
         }
         public void Remove( string id )
         {
+            _processes[ id ].Kill( );
             _processes.Remove( id );
         }
         public void Update( string id, string value )

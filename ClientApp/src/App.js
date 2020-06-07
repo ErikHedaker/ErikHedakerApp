@@ -29,18 +29,17 @@ export default class App extends Component {
             Eng: { backgroundColor: this.state.language === "en" ? colors.On : colors.Off },
             Swe: { backgroundColor: this.state.language === "sv" ? colors.On : colors.Off },
             Position: {
-                position: "fixed",
+                position: "absolute",
                 bottom: "0",
                 right: "0",
-                marginRight: "2px",
-                marginBottom: "2px"
+                margin: "1px"
             }
         }
 
         return (
-            <ButtonGroup className="sm" style={styles.Position} vertical>
-                <Button className="sm button-default" style={styles.Eng} onClick={this.LanguageSet.bind(this, "en")}>en</Button>
-                <Button className="sm button-default" style={styles.Swe} onClick={this.LanguageSet.bind(this, "sv")}>sv</Button>
+            <ButtonGroup style={styles.Position}>
+                <Button className="button-default" style={styles.Eng} onClick={this.LanguageSet.bind(this, "en")}>en</Button>
+                <Button className="button-default" style={styles.Swe} onClick={this.LanguageSet.bind(this, "sv")}>sv</Button>
             </ButtonGroup>
         );
     };

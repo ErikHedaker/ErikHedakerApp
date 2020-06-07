@@ -6,7 +6,7 @@ import './Styles.css';
 export function NavMenu(props) {
     const DropdownThing = (route, name) => {
         return (
-            <DropdownItem>
+            <DropdownItem style={{ padding: "8px" }}>
                 <NavLink tag={Link} to={route} className="text-dark">
                     {name}
                 </NavLink>
@@ -17,24 +17,24 @@ export function NavMenu(props) {
     return (
         <Nav className="gradient-top">
             <Container style={{ marginTop: "12px", marginBottom: "24px", display: "flex", flexDirection: "row", justifyContent: "flex-end" }}>
-                <NavItem className="border-navbar-item hover-background" style={{ marginRight: "auto" }}>
-                    <NavLink className="nav-item" tag={Link} to="/">
+                <NavItem style={{ marginRight: "auto" }}>
+                    <NavLink className="navmenu-header navmenu-border navmenu-hover-background"  tag={Link} to="/">
                         Erik Hedåker
                     </NavLink>
                 </NavItem>
-                <UncontrolledDropdown className="border-navbar-item hover-background text-dark" style={{ marginLeft: "2px" }}>
-                    <DropdownToggle className="nav-item" nav caret>
+                <UncontrolledDropdown style={{ marginLeft: "2px" }}>
+                    <DropdownToggle className="navmenu-header navmenu-border navmenu-hover-background" nav caret>
                         {text.Projects[props.language]}
                     </DropdownToggle>
-                    <DropdownMenu className="border-navbar-item" style={{ margin: "5px 0px 0px -3px" }}>
+                    <DropdownMenu className="navmenu-border" style={{ marginTop: "2px" }}>
                         {DropdownThing("/Overview", text.Overview[props.language])}
                         <DropdownItem divider />
                         {DropdownThing("/Dungeoncrawler", "Dungeoncrawler")}
                         {DropdownThing("/Snake", "Snake")}
                     </DropdownMenu>
                 </UncontrolledDropdown>
-                <NavItem className="nav-item hover-background border-navbar-item" style={{ marginLeft: "2px" }}>
-                    <NavLink className="nav-item" tag={Link} to="/AboutMe">
+                <NavItem style={{ marginLeft: "2px" }}>
+                    <NavLink className="navmenu-header navmenu-border navmenu-hover-background"  tag={Link} to="/AboutMe">
                         {text.AboutMe[props.language]}
                     </NavLink>
                 </NavItem>

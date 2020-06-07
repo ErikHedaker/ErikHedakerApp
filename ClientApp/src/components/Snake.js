@@ -14,7 +14,7 @@ export class Snake extends Component {
             interval: 100
         };
         this.toggleDisplay = true;
-        this.isMobile = window.innerWidth <= 800;
+        this.isMobile = window.innerWidth <= 750;
         this.Restart();
     }
     componentDidMount() {
@@ -24,21 +24,37 @@ export class Snake extends Component {
         clearInterval(this.intervalID);
     }
     render() {
+        const ButtonControl = (text, func) => {
+            return (
+                <Button className="snake-controls-button" onClick={func}>
+                    {text}
+                </Button>
+            );
+        }
+
         return (
             <div>
                 <div style={{ textAlign: "center" }}>
                     {this.DisplayGame()}
                 </div>
-                <div style={{ position: "fixed", bottom: "0", right: "0" }}>
-                    {this.MovementPanel()}
-                    <br />
-                    {this.ControlPanel()}
+                <div className="snake-controls">
+                    <div style={{ textAlign: "center" }}>
+                        {ButtonControl("W", this.Movement.bind(this, "W"))}
+                        <br />
+                        {ButtonControl("A", this.Movement.bind(this, "A"))}
+                        {ButtonControl("S", this.Movement.bind(this, "S"))}
+                        {ButtonControl("D", this.Movement.bind(this, "D"))}
+                    </div>
+                    <div style={{ width: "100%" }}>
+                        {ButtonControl("R", this.Restart.bind(this))} Restart
+                        <br />
+                        {ButtonControl("F", this.ToggleDisplay.bind(this))} Display
+                    </div>
                 </div>
-                <div className="monospace-text" style={{ position: "fixed", bottom: "0", left: "0" }}>
-                    <div className="box-responsive monospace-text" style={{ marginBottom: "2px", width: "100%" }}>
+                <div style={{ position: "fixed", bottom: "0", left: "0" }}>
+                    <div className="snake-current-length monospace-text">
                         Current length: {this.player.body.length}
                     </div>
-                    <br />
                     <ConfigurationFormInput config={this.config} SnakeSet={this.SnakeSet.bind(this)} />
                 </div>
             </div>
@@ -98,26 +114,6 @@ export class Snake extends Component {
         if (directions[key] !== opposite[this.directionPrev]) {
             this.direction = directions[key];
         }
-    }
-    MovementPanel() {
-        return (
-            <div className="box-responsive monospace-text" style={{ textAlign: "center", marginBottom: "2px" }}>
-                {ButtonFunction("[W]", this.Movement.bind(this, "W"))}
-                <br />
-                {ButtonFunction("[A]", this.Movement.bind(this, "A"))}
-                {ButtonFunction("[S]", this.Movement.bind(this, "S"))}
-                {ButtonFunction("[D]", this.Movement.bind(this, "D"))}
-            </div>
-        );
-    }
-    ControlPanel() {
-        return (
-            <div className="box-responsive monospace-text" style={{ width: "100%" }}>
-                {ButtonFunction("[R]", this.Restart.bind(this))} Restart
-                <br />
-                {ButtonFunction("[F]", this.ToggleDisplay.bind(this))} Display
-            </div>
-        );
     }
     Update() {
         this.player.Move(this.direction);
@@ -224,7 +220,7 @@ export class Snake extends Component {
         );
     }
     DisplayGame() {
-        const size = this.isMobile ? 20 : 30;
+        const size = this.isMobile ? 15 : 30;
         return this.toggleDisplay ? this.RenderGraphics(size, 1) : this.RenderCharacters();
     }
 }
@@ -238,18 +234,16 @@ class ConfigurationFormInput extends Component {
     }
     render() {
         return (
-            <div className="box-responsive box-config-responsive" style={{ display: "flex", flexWrap: "wrap" }}>
+            <div className="snake-config monospace-text" style={{ display: "flex", flexDirection: "column" }}>
                 <h2 className="header-responsive" style={{ width: "100%", textAlign: "center" }}>
                     Game configuration
                 </h2>
-                <br />
-                {this.InputBox("Game width",   "width",    " input-responsive-pad-large")}
-                {this.InputBox("Game height",  "height",   " input-responsive-pad-small")}
-                {this.InputBox("Food amount",  "food",     " input-responsive-pad-small")}
+                {this.InputBox("Game width",   "width",    "input-responsive-pad-large")}
+                {this.InputBox("Game height",  "height",   "input-responsive-pad-small")}
+                {this.InputBox("Food amount",  "food",     "input-responsive-pad-small")}
                 {this.InputBox("Start length", "length",   "")}
                 {this.InputBox("Update speed", "interval", "")}
-                <br />
-                <Button className="button-default input-responsive" style={{ flex: "1", padding: "0px" }} onClick={this.OnClick.bind(this)}>
+                <Button className="button-default input-responsive" style={{ margin: "0", padding: "0px" }} onClick={this.OnClick.bind(this)}>
                     Save and Restart
                 </Button>
             </div>
@@ -259,7 +253,7 @@ class ConfigurationFormInput extends Component {
         return (
             <InputGroup>
                 <InputGroupAddon className="input-responsive" addonType="prepend">
-                    <InputGroupText className={"input-responsive" + classname}>
+                    <InputGroupText className={"input-responsive " + classname}>
                         {text}
                     </InputGroupText>
                 </InputGroupAddon>
@@ -370,12 +364,5 @@ function CollisionCheckArrayVector2i(first, second) {
         });
     });
     return collision;
-}
-function ButtonFunction(text, func, style) {
-    return (
-        <Button className="button-default" onClick={func} style={style}>
-            {text}
-        </Button>
-    );
 }
 const reactStringReplace = require('react-string-replace');
